@@ -93,6 +93,7 @@ class Session(object):
     
     # calculated occurence list:
     self.occurences = []
+    self.total_duration = 0
     
     # "backup" of rules, in order to be able to reprocess them
     self.rules = []
@@ -112,8 +113,9 @@ class Session(object):
          than the other : the number of hours ? the date-start and date-end ?)
     """
     if isinstance(other, Session):
-      # TODO:here we have two objects to compare we need to compare the occurences..
-      return cmp(self.session_name, other.session_name)
+      # here have two objects to compare we need to compare the occurences..
+      # so we compare the total duration of all occurences
+      return cmp(self.total_duration, other.total_duration)
     elif isinstance(other, str):
       return cmp(self.session_name, other)
     else:
@@ -183,9 +185,12 @@ class Session(object):
     """
     # after adding a rule, we need to recompute the period list
     new_occurences = []
+    new_total_duration = 0
     for occ in list(self.set):
       new_occurences.append((occ, occ+relativedelta(minutes=+self.duration)))
+      new_total_duration += self.duration
     self.occurences = new_occurences
+    self.total_duration = new_total_duration
     return new_occurences
     
   def get_rules(self):
@@ -194,11 +199,17 @@ class Session(object):
   def get_occurences(self):
     return self.occurences
 
-  def in_period(self, the_date=datetime.datetime.now()):
+  def in_period(self, the_date=datetime.datetime.now(), return_period=False):
     """Returns True if the given date is inside a period defined by
     all the rules of this object
     possible optimization : use between method to filter some occurences
     and test only the filtered occurences
+    
+    if the argument 'return_period' is set the returned values will be
+    tuples instead of boolean : a tuple with the matching period if 
+    in_period is True and an empty tuple if in_period is False
+    it's always possible to test the result ("if in_period(return_period=True): ...")
+    with this returns values  
     """
     date_or_now = lambda x: x if x is not None else datetime.datetime.now()
     start = date_or_now(self.set.before(datetime.datetime.now(), True))
@@ -210,13 +221,52 @@ class Session(object):
 
     for period_occurence in self.occurences:
       if period_occurence[0] <= the_date and period_occurence[1] >= the_date:
-        return True
+        if return_period:
+          return (period_occurence)
+        else:
+          return True
     
-    return False
+    if return_period:
+      return ()
+    else:
+      return False
+  
+  def next_period(self, the_date=datetime.datetime.now(), inclusive=True):
+    """Returns the next period (datetime tuple, start and end)
+    for a given date.
+    If the date is inside a period and inclusive is set to True, returns
+    the 'current' period. Otherwise, returns the next period
     
+    Return None if no period is found
+    """
+    period_in = self.in_period(the_date, return_period=True)
+    if  period_in and inclusive:
+      return period_in
+    else:
+      after = self.set.after(the_date, True)
+      return (after, after+relativedelta(minutes=+self.duration))
+      
+  def prev_period(self, the_date=datetime.datetime.now(), inclusive=True):
+    """Returns the next period (datetime tuple, start and end)
+    for a given date.
+    If the date is inside a period and inclusive is set to True, returns
+    the 'current' period. Otherwise, returns the next period
+    
+    Return None if no period is found
+    """
+    period_in = self.in_period(the_date, return_period=True)
+    if  period_in and inclusive:
+      return period_in
+    else:
+      previous = self.set.before(the_date, True)
+      if period_in:
+        if period_in[0] == previous:
+          previous = self.set.before(previous, False)
+      return (previous, previous+relativedelta(minutes=+self.duration))
+      
 def test():
-  vac = Session(60*7)
-  vac.add_rule("1er jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today(), interval=6)
-  vac.add_rule("2eme jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today()+relativedelta(days=+1), interval=6)
-  vac.add_rule("3eme jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today()+relativedelta(days=+2), interval=6)
-  vac.list_rules()
+  ses = Session(60*7)
+  ses.add_rule("1er jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today(), interval=6)
+  ses.add_rule("2eme jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today()+relativedelta(days=+1), interval=6)
+  ses.add_rule("3eme jour des 6", freq=rrule.DAILY,dtstart=datetime.date.today()+relativedelta(days=+2), interval=6)
+  ses.list_rules()
