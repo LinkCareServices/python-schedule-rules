@@ -4,7 +4,7 @@
 # Copyright 2011 Link Care Services
 #
 """
-Test for XXXXX class
+Test for Session class
 """
 
 __authors__ = [
