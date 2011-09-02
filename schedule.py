@@ -4,6 +4,11 @@
 # Copyright 2011 Link Care Services
 #
 """Schedule Rules
+
+Useful urls:
+python-dateutil : http://labix.org/python-dateutil
+python operators : http://docs.python.org/library/operator.html
+
 """
 
 __authors__ = [
@@ -100,7 +105,9 @@ class Interval(object):
     if other inside self, can return 2 new intervals
     if other ouside self, return a tuple (self, other)
     """
-    if other in self:
+    if other == self:
+      return None 
+    elif other in self:
       return (Interval(self.start, other.start), Interval(other.end, self.end))
     elif self in other:
       return None
@@ -383,23 +390,25 @@ class Session(object):
       if _and is not None:
         result.append(_and)
         
-    if result == []:
-      return None
-    else:
-      return result
+    return result
     
   def __add__(self, other):
     """Calculate addition between two Sessions
     returns: returns: a list of Interval
+    
+    bug here: the 2 last values are not added sometimes
     """
     all_occs = sorted(self.occurences + other.occurences)
     recover = True
+    prec_occ = []
     while recover: # continues until only disjoint Intervals are present
-      print "loop...."
       total_len = len(all_occs)
+      print "total_len: %s" % total_len
       result = []
       recover = False
-      for i in range(0, total_len-2):
+      for i in range(0, total_len-1):
+        if i == (total_len-2) or i == (total_len-1):
+          print i, all_occs[i], all_occs[i+1] 
         _and = all_occs[i] & all_occs[i+1] 
         if _and is not None:
           prec_occ = all_occs[i] + all_occs[i+1]
@@ -409,41 +418,57 @@ class Session(object):
           if all_occs[i] not in prec_occ: 
             result.append(all_occs[i])
       all_occs = sorted(result)
-      
-    
 
-    if result == []:
-      return None
-    else:
-      return result
+    return result
     
   def __sub__(self, other):
     """Calculate substration between two Sessions
     returns : a list of Interval
+    
+    TODO: pb si dans self il y a des plages sans _and (des plages en dehors 
+    des plages de other, on devrait les retrouver dans les résultats or ici 
+    on ne les retrouve pas)
     """
+    if len(other) == 0:
+      return self.occurences
+    if len(self) == 0:
+      return []
+      
     for occ in self.occurences:
       occ.rank = 2
     for occ in other.occurences:
-      occ.rank = 1    
+      occ.rank = 1
+    
     result = []
     all_occs = sorted(self.occurences + other.occurences)
     total_len = len(all_occs)
-    for i in range(0, total_len-2):
+    for i in range(0, total_len-1):
       _and = all_occs[i] & all_occs[i+1] 
       if _and is not None:
-        if all_occs[i].rank > all_occs[i+1].rank:
-          result.append(all_occs[i] - all_occs[i+1])
-        else:
-          result.append(all_occs[i+1] - all_occs[i])
-
+        if all_occs[i].rank == 2 and all_occs[i+1].rank == 1:
+          substraction_result = all_occs[i] - all_occs[i+1]
+        elif all_occs[i].rank == 1 and all_occs[i+1].rank == 2:
+          substraction_result = all_occs[i+1] - all_occs[i]
+        elif all_occs[i].rank == 1 and all_occs[i+1].rank == 1:
+          # no substraction at all here: what should we do ? (should not happen)
+          substraction_result = None
+        if type(substraction_result) == Interval:
+          result.append(substraction_result)
+        elif type(substraction_result) == list:
+          for elt in substraction_result:
+            result.append(elt)
+        elif type(substraction_result) is None:
+          pass
+      #else:
+      #  if all_occs[i].rank == 2:
+      #    result.append(all_occs[i])
+          
     for occ in self.occurences:
       occ.rank = None
     for occ in other.occurences:
       occ.rank = None
-    if result == []:
-      return None
-    else:
-      return result
+
+    return result
     
   def __getitem__(self, _slice):
     return self.occurences[_slice]
