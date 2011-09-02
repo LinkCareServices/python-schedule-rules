@@ -3,8 +3,7 @@
 #
 # Copyright 2011 Link Care Services
 #
-"""TEST rrules dateutil
-
+"""Schedule Rules
 """
 
 __authors__ = [
@@ -23,9 +22,17 @@ def find(_list, _search):
 
 class Interval(object):
   """Represent an interval (espacialy date interval)
+  
+  start : represent the datetime of the period start
+    end : represent the datetime of the period end
+    
+  rank : usually not used, but can be set with a value (numeric values)
+         this will prioritize Intervals between them if in the same list
+         (used for substracting interval lists)
   """
   start = None
   end = None
+  rank = None
   
   def __init__(self, start, end):
     if start > end:
@@ -37,13 +44,16 @@ class Interval(object):
     """Representation of object"""
     return "%s --> %s" % (self.start, self.end)
 
-  def eq(self, other):
+  def __eq__(self, other):
     """equality operator
     """
     if self.start == other.start and self.end == other.end:
       return True
     else:
       return False
+      
+  def __cmp__(self, other):
+    return cmp(self.start, other.start)
       
   def __contains__(self, other):
     """test if other is contained inside self
@@ -65,15 +75,15 @@ class Interval(object):
     or None
     """
     if (self.start <= other.start <= other.end <= self.end):
-        return Interval(other.start,other.end)
+      return Interval(other.start,other.end)
     elif (self.start <= other.start <= self.end):
-        return Interval(other.start,self.end)
+      return Interval(other.start,self.end)
     elif (self.start <= other.end <= self.end):
-        return Interval(self.start,other.end)
+      return Interval(self.start,other.end)
     elif (other.start <= self.start <= self.end <= other.end):
-        return Interval(self.start,self.end)
+      return Interval(self.start,self.end)
     else:
-        return None
+      return None
   
   def __add__(self, other):
     """if intersection, returns a new interval based on max extremities
@@ -84,6 +94,31 @@ class Interval(object):
                       max(self.end, other.end))
     else:
       return (self, other)
+      
+  def __sub__(self, other): # chercher si il y a un operateur comme pour __add__
+    """if intersection, returns a new (smaller) interval : self - other
+    if other inside self, can return 2 new intervals
+    if other ouside self, return a tuple (self, other)
+    """
+    if other in self:
+      return (Interval(self.start, other.start), Interval(other.end, self.end))
+    elif self in other:
+      return None
+    elif self & other:
+      if self.start <= other.start:
+        return Interval(self.start, other.start)
+      else:
+        return Interval(other.end, self.end)
+    else:
+      if self.start < other.start:
+        return (self, other)
+      else:
+        return (other, self)
+        
+  def __hash__(self):
+    """return a hash of the object wich should be unique
+    """
+    return hash((self.start, self.end))
 
 class SRules(object):
   """SRule = Schedule Rules object
@@ -122,7 +157,8 @@ class SRules(object):
   def _forward(self):
     """forward generator"""
     current_item = 0
-    while (current_item < len(self.occurences)):
+    total_len = len(self.occurences)
+    while (current_item < total_len):
       interval = self.occurences[current_item]
       current_item += 1
       yield interval
@@ -256,12 +292,17 @@ class Session(object):
   def _forward(self):
     """forward generator"""
     current_item = 0
-    while (current_item < len(self.occurences)):
+    total_len = len(self.occurences)
+    while (current_item < total_len):
       interval = self.occurences[current_item]
       current_item += 1
       yield interval
-    	
-  def __cmp__(self, other):
+  
+  def __len__(self):
+    """calculate len of object"""
+    return len(self.occurences)
+    
+  def __eq__(self, other):
     """returns a comparaison between self and anoter object
     can compare two objects of same type and also compare object
     to a string
@@ -278,7 +319,8 @@ class Session(object):
     if isinstance(other, Session):
       # here have two objects to compare we need to compare the occurences..
       # so we compare the total duration of all occurences
-      return cmp(self.total_duration, other.total_duration)
+      
+      return cmp(self.occurences, other.occurences)
     elif isinstance(other, str):
       return cmp(self.session_name, other)
     else:
@@ -313,6 +355,99 @@ class Session(object):
     else:
       return False
 
+  def __and__(self, other):
+    """Calculate intersection between two Sessions
+    returns: a list of Interval
+    """
+    result = []
+    #     prec_pos = 0
+    #     for s_occ in self.occurences:
+    #       pos = 0
+    #       for o_occ in other.occurences[prec_pos:]:
+    #         # optimisation 1
+    #         if o_occ.start > s_occ.end:
+    #           break
+    #         # optimisation 2
+    #         if o_occ.end < s_occ.start:
+    #           pos+=1
+    #           continue
+    #         else:
+    #           prec_pos = pos   
+    #           _and = s_occ & o_occ 
+    #           if _and is not None:
+    #             result.append(_and)
+    all_occs = sorted(self.occurences + other.occurences)
+    total_len = len(all_occs)
+    for i in range(0, total_len-2):
+      _and = all_occs[i] & all_occs[i+1] 
+      if _and is not None:
+        result.append(_and)
+        
+    if result == []:
+      return None
+    else:
+      return result
+    
+  def __add__(self, other):
+    """Calculate addition between two Sessions
+    returns: returns: a list of Interval
+    """
+    all_occs = sorted(self.occurences + other.occurences)
+    recover = True
+    while recover: # continues until only disjoint Intervals are present
+      print "loop...."
+      total_len = len(all_occs)
+      result = []
+      recover = False
+      for i in range(0, total_len-2):
+        _and = all_occs[i] & all_occs[i+1] 
+        if _and is not None:
+          prec_occ = all_occs[i] + all_occs[i+1]
+          result.append(prec_occ)
+          recover = True
+        else:
+          if all_occs[i] not in prec_occ: 
+            result.append(all_occs[i])
+      all_occs = sorted(result)
+      
+    
+
+    if result == []:
+      return None
+    else:
+      return result
+    
+  def __sub__(self, other):
+    """Calculate substration between two Sessions
+    returns : a list of Interval
+    """
+    for occ in self.occurences:
+      occ.rank = 2
+    for occ in other.occurences:
+      occ.rank = 1    
+    result = []
+    all_occs = sorted(self.occurences + other.occurences)
+    total_len = len(all_occs)
+    for i in range(0, total_len-2):
+      _and = all_occs[i] & all_occs[i+1] 
+      if _and is not None:
+        if all_occs[i].rank > all_occs[i+1].rank:
+          result.append(all_occs[i] - all_occs[i+1])
+        else:
+          result.append(all_occs[i+1] - all_occs[i])
+
+    for occ in self.occurences:
+      occ.rank = None
+    for occ in other.occurences:
+      occ.rank = None
+    if result == []:
+      return None
+    else:
+      return result
+    
+  def __getitem__(self, _slice):
+    return self.occurences[_slice]
+    
   def add_rule(self, label="", **rrule_params):
     """add a recuring rule for this set
     """
@@ -320,7 +455,7 @@ class Session(object):
     rrule_params.setdefault('cache', True)
     
     if 'count' not in rrule_params and 'until' not in rrule_params:
-      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+10))
+      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+5))
     
     if 'dtstart' in rrule_params:
       if isinstance(rrule_params['dtstart'], datetime.date):
@@ -342,7 +477,7 @@ class Session(object):
     rrule_params.setdefault('cache', True)
     
     if 'count' not in rrule_params and 'until' not in rrule_params:
-      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+10))
+      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+5))
 
     if 'dtstart' in rrule_params:
       if isinstance(rrule_params['dtstart'], datetime.date):
