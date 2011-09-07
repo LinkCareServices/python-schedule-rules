@@ -268,7 +268,7 @@ class Session(object):
   wich will be used to calculate the start and end datetime of each occurence
   """
 
-  def __init__(self, session_name, duration=60, start_hour=0, start_minute=0,
+  def __init__(self, session_name="", duration=60, start_hour=0, start_minute=0,
                      session_type='add', session_description=None):
     """Constructor object
     
@@ -323,13 +323,13 @@ class Session(object):
         (at least for equality : diffult to say which is greater 
          than the other : the number of hours ? the date-start and date-end ?)
     """
-    if isinstance(other, Session):
+    if isinstance(other, Session) or isinstance(other, CalculatedSession):
       # here have two objects to compare we need to compare the occurences..
       # so we compare the total duration of all occurences
       
-      return cmp(self.occurences, other.occurences)
+      return self.occurences == other.occurences
     elif isinstance(other, str):
-      return cmp(self.session_name, other)
+      return self.session_name == other
     else:
       return False
  
@@ -351,7 +351,7 @@ class Session(object):
             return True
     elif type(other) == datetime.datetime:
       for occ in self.occurences:
-        if (occ.start <= other <= other <= occ.end):
+        if (occ.start <= other <= occ.end):
           if return_interval:
             return occ
           else:
@@ -362,6 +362,12 @@ class Session(object):
     else:
       return False
 
+  def in_period(self, other, return_interval=False):
+    """public wrapper for __contains__
+    mainly used when needed to set return_interval to True
+    """
+    return self.__contains__(other, return_interval)
+    
   def __and__(self, other):
     """Calculate intersection between two Sessions
     returns: a list of Interval
@@ -390,7 +396,7 @@ class Session(object):
       if _and is not None:
         result.append(_and)
         
-    return result
+    return CalculatedSession(result)
     
   def __add__(self, other):
     """Calculate addition between two Sessions
@@ -398,28 +404,49 @@ class Session(object):
     
     bug here: the 2 last values are not added sometimes
     """
-    all_occs = sorted(self.occurences + other.occurences)
+    if other is None:
+      return CalculatedSession(self.occurences)
+    if len(other) == 0:
+      return CalculatedSession(self.occurences)
+    if len(self) == 0:
+      return CalculatedSession(other.occurences)
+    
+    if type(other) == Interval:
+      all_occs = sorted(self.occurences + [other])
+    elif type(other) == datetime.datetime:
+      all_occs = sorted(self.occurences + [Interval(other, other)])
+    elif type(other) == Session or type(other) == CalculatedSession:
+      all_occs = sorted(self.occurences + other.occurences)
+    else:
+      raise TypeError("Can not add Session with %s" % type(other))
+      
     recover = True
     prec_occ = []
     while recover: # continues until only disjoint Intervals are present
       total_len = len(all_occs)
-      print "total_len: %s" % total_len
       result = []
       recover = False
-      for i in range(0, total_len-1):
-        if i == (total_len-2) or i == (total_len-1):
-          print i, all_occs[i], all_occs[i+1] 
-        _and = all_occs[i] & all_occs[i+1] 
+      for i in range(total_len-1):
+        try:
+          #print "i:%s, %s, %s" % (i, all_occs[i], all_occs[i+1]) 
+          _and = all_occs[i] & all_occs[i+1] 
+        except IndexError:
+          # index out of range (because of i+1): we are at the end
+          #print "i:%s, %s, --" % (i, all_occs[i])
+          _and = None
         if _and is not None:
           prec_occ = all_occs[i] + all_occs[i+1]
           result.append(prec_occ)
           recover = True
         else:
+          # TODO:Pb Here, some date are not added....
           if all_occs[i] not in prec_occ: 
             result.append(all_occs[i])
+          if i == total_len-2:
+            result.append(all_occs[i+1])
       all_occs = sorted(result)
 
-    return result
+    return CalculatedSession(result)
     
   def __sub__(self, other):
     """Calculate substration between two Sessions
@@ -430,9 +457,9 @@ class Session(object):
     on ne les retrouve pas)
     """
     if len(other) == 0:
-      return self.occurences
+      return CalculatedSession(self.occurences)
     if len(self) == 0:
-      return []
+      return CalculatedSession([])
       
     for occ in self.occurences:
       occ.rank = 2
@@ -468,7 +495,7 @@ class Session(object):
     for occ in other.occurences:
       occ.rank = None
 
-    return result
+    return CalculatedSession(result)
     
   def __getitem__(self, _slice):
     return self.occurences[_slice]
@@ -553,7 +580,7 @@ class Session(object):
     
     Return None if no period is found
     """
-    period_in = self.in_period(the_date, return_period=True)
+    period_in = self.__contains__(the_date, return_interval=True)
     if  period_in and inclusive:
       return period_in
     else:
@@ -568,7 +595,7 @@ class Session(object):
     
     Return None if no period is found
     """
-    period_in = self.in_period(the_date, return_period=True)
+    period_in = self.__contains__(the_date, return_interval=True)
     if  period_in and inclusive:
       return period_in
     else:
@@ -577,3 +604,45 @@ class Session(object):
         if period_in.start == previous:
           previous = self.set.before(previous, False)
       return Interval(previous, previous+relativedelta(minutes=+self.duration))
+
+class CalculatedSession(Session):
+  """a CalculatedSession is the result of manipulation of one or more sessions
+  and when a Session can not be defined by rules anymore
+  ex:
+  Session + Session = CalculatedSession
+  Session - Session = CalculatedSession
+  
+  Sessions and CalculatedSessions share same method (like __add__, __sub__, etc..)
+  but not others (like "add_rule" and all the other rules related methods)
+  """
+  
+  def __init__(self, list=None):
+    """Initalisation is done by giving a list of Intervals 
+    (or None if the list will be added later)
+    """
+    Session.__init__(self)
+    self.occurences = list
+    
+  def add_rule(self, label="", **rrule_params):
+    """cancel this method"""
+    return None
+    
+  def exclude_rule(self, label="", **rrule_params):
+    """cancel this method"""
+    return None
+    
+  def _occurences_in_period(self, start, end):  
+    """cancel this method"""
+    return None
+    
+  def _recalculate_occurences(self):
+    """cancel this method"""
+    return None
+
+  def next_period(self, the_date=datetime.datetime.now(), inclusive=True):
+    """cancel this method"""
+    return None
+  
+  def prev_period(self, the_date=datetime.datetime.now(), inclusive=True):
+    """cancel this method"""
+    return None
