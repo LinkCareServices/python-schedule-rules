@@ -421,9 +421,9 @@ class Session(object):
       raise TypeError("Can not add Session with %s" % type(other))
       
     recover = True
-    prec_occ = []
     while recover: # continues until only disjoint Intervals are present
       total_len = len(all_occs)
+      prec_occ = []
       result = []
       recover = False
       for i in range(total_len-1):

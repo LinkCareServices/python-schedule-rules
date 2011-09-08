@@ -223,7 +223,7 @@ class TestSessionAdd1(TestSession):
     assert datetime.datetime(2015,8,30,12,00) in self.result_list
 
   def test_8(self):
-    assert datetime.datetime(2015,8,30,15,00) not in self.result_list
+    assert datetime.datetime(2015,8,30,15,00) in self.result_list
 
   def test_9(self):
     assert datetime.datetime(2021,8,29,15,00) in self.result_list   
@@ -272,7 +272,7 @@ class TestSessionAdd2(TestSession):
     assert datetime.datetime(2012,11,30,12,00) in self.result_list
     
   def test_10(self):
-    assert datetime.datetime(2012,11,30,15,00) not in self.result_list    
+    assert datetime.datetime(2012,11,30,15,00) in self.result_list    
     
   def test_11(self):
     assert datetime.datetime(2021,8,29,15,00) in self.result_list
