@@ -231,7 +231,6 @@ class TestSessionAdd1(TestSession):
   def test_10(self):
     assert datetime.datetime(2021,8,29,12,00) not in self.result_list   
 
-
 class TestSessionAdd2(TestSession):
   def setUp(self):
     TestSession.setUp(self)
@@ -340,10 +339,191 @@ class TestSessionAddSpecialCases(TestSession):
   def test_2(self):
     assert self.ses_p + self.ses_p == self.ses_p
     
+class TestSessionSub1(TestSession):
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=60*3,start_hour=11, start_minute=30)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2011,8,30), 
+                 interval=1,
+                 until = datetime.date(2015,8,30)  
+                )
+    self.result_list = self.ses_p - self.ses_p2
+    
+  def test_1(self):
+    assert datetime.datetime(2011,8,20,15,00) in self.result_list
+    
+  def test_2(self):
+    assert datetime.datetime(2011,8,20,11,00) not in self.result_list
 
+  def test_3(self):
+    assert datetime.datetime(2011,8,23,15,00) not in self.result_list
+
+  def test_4(self):
+    assert datetime.datetime(2011,8,30,13,45) not in self.result_list
+      
+  def test_5(self):
+    assert datetime.datetime(2011,9,1,13,45) not in self.result_list
+
+  def test_6(self):
+    assert datetime.datetime(2011,9,1,15,00) in self.result_list
+    
+  def test_7(self):
+    assert datetime.datetime(2015,8,30,13,45) not in self.result_list
+
+  def test_8(self):
+    assert datetime.datetime(2015,8,30,15,00) in self.result_list
+
+  def test_9(self):
+    assert datetime.datetime(2021,8,29,15,00) in self.result_list   
+
+  def test_10(self):
+    assert datetime.datetime(2021,8,29,12,00) not in self.result_list   
+
+class TestSessionSub2(TestSession):
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=60*3,start_hour=11, start_minute=30)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2011,8,15), 
+                 interval=1,
+                 until = datetime.date(2012,11,30)  
+                )
+    self.result_list = self.ses_p - self.ses_p2
+      
+  def test_1(self):
+    assert datetime.datetime(2011,8,15,15,00) not in self.result_list
+    
+  def test_2(self):
+    assert datetime.datetime(2011,8,15,11,45) not in self.result_list
+
+  def test_3(self):
+    assert datetime.datetime(2011,8,20,15,00) in self.result_list
+    
+  def test_4(self):
+    assert datetime.datetime(2011,8,20,13,45) not in self.result_list
+
+  def test_5(self):
+    assert datetime.datetime(2011,8,23,15,00) not in self.result_list
+
+  def test_6(self):
+    assert datetime.datetime(2011,8,30,12,00) not in self.result_list
+
+  def test_7(self):
+    assert datetime.datetime(2011,8,30,15,00) not in self.result_list
+
+  def test_8(self):
+    assert datetime.datetime(2011,9,1,15,00) in self.result_list
+
+  def test_8bis(self):
+    assert datetime.datetime(2011,9,1,13,45) not in self.result_list
+
+  def test_9(self):
+    assert datetime.datetime(2012,11,30,13,45) not in self.result_list
+    
+  def test_10(self):
+    assert datetime.datetime(2012,11,30,15,00) in self.result_list    
+    
+  def test_11(self):
+    assert datetime.datetime(2021,8,29,15,00) in self.result_list
+    
+  def test_12(self):
+    assert datetime.datetime(2021,8,29,12,00) not in self.result_list       
+
+class TestSessionSub3(TestSession):
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=60*3,start_hour=11, start_minute=30)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2021,8,15), 
+                 interval=1,
+                 until = datetime.date(2022,6,30)  
+                )
+    self.result_list = self.ses_p - self.ses_p2
+    
+  def test_1(self):
+    assert datetime.datetime(2011,8,20,13,45) in self.result_list
+    
+  def test_2(self):
+    assert datetime.datetime(2011,8,20,11,00) not in self.result_list
+
+  def test_3(self):
+    assert datetime.datetime(2011,8,20,13,45) in self.result_list
+    
+  def test_4(self):
+    assert datetime.datetime(2011,8,23,15,00) not in self.result_list
+
+  def test_5(self):
+    assert datetime.datetime(2011,8,30,12,00) not in self.result_list
+
+  def test_6(self):
+    assert datetime.datetime(2011,8,30,15,00) not in self.result_list
+
+  def test_7(self):
+    assert datetime.datetime(2011,9,1,13,45) in self.result_list
+
+  def test_8(self):
+    assert datetime.datetime(2021,8,15,15,00) in self.result_list   
+  
+  def test_9(self):
+    assert datetime.datetime(2021,8,15,13,45) not in self.result_list   
+
+  def test_10(self):
+    assert datetime.datetime(2021,8,29,15,00) in self.result_list   
+
+  def test_11(self):
+    assert datetime.datetime(2021,8,29,13,45) not in self.result_list   
+
+  def test_12(self):
+    assert datetime.datetime(2022,6,30,13,45) not in self.result_list
+
+  def test_13(self):
+    assert datetime.datetime(2022,6,30,11,00) not in self.result_list   
+
+
+class TestSessionSub3(TestSession):
+  """In this test, the B interval is within A, so sub should result in 
+  spltting this results in two intervals"""
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=60*3,start_hour=15, start_minute=30)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2021,8,15), 
+                 interval=1,
+                 until = datetime.date(2022,6,30)  
+                )
+    self.result_list = self.ses_p - self.ses_p2
+
+  def test_1(self):
+    pass #TODO
+
+class TestSessionSubSpecialCases(TestSession):
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=60*3,start_hour=11, start_minute=30)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2021,8,15), 
+                 interval=1,
+                 until = datetime.date(2022,6,30)  
+                )
+    self.result_list = self.ses_p + self.ses_p2
+
+  def test_1(self):
+    assert self.ses_p - None == self.ses_p
+    
+  def test_2(self):
+    assert len(self.ses_p - self.ses_p) == 0
+    
+  #def test_3(self):
+  #  assert None - self.ses_p == None
 
 if __name__ == "__main__":
   import sys
   suite = unittest.findTestCases(sys.modules[__name__])  
-  #suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+  #suite = unittest.TestLoader().loadTestsFromTestCase(TestSessionSub3)
   unittest.TextTestRunner(verbosity=2).run(suite)

@@ -108,7 +108,7 @@ class Interval(object):
     if other == self:
       return None 
     elif other in self:
-      return (Interval(self.start, other.start), Interval(other.end, self.end))
+      return [Interval(self.start, other.start), Interval(other.end, self.end)]
     elif self in other:
       return None
     elif self & other:
@@ -118,9 +118,9 @@ class Interval(object):
         return Interval(other.end, self.end)
     else:
       if self.start < other.start:
-        return (self, other)
+        return [self, other]
       else:
-        return (other, self)
+        return [other, self]
         
   def __hash__(self):
     """return a hash of the object wich should be unique
@@ -455,46 +455,93 @@ class Session(object):
     TODO: pb si dans self il y a des plages sans _and (des plages en dehors 
     des plages de other, on devrait les retrouver dans les résultats or ici 
     on ne les retrouve pas)
+    bugs acorriger:
+     - n'ajoute dans la liste qu'à partir des premieres intervalles communes
+       (si les premieres ne se recouvrent pas, n'ajoute pas les plages source)
+      
     """
+    if other is None:
+      return CalculatedSession(self.occurences)
     if len(other) == 0:
       return CalculatedSession(self.occurences)
     if len(self) == 0:
       return CalculatedSession([])
-      
+    
     for occ in self.occurences:
       occ.rank = 2
-    for occ in other.occurences:
-      occ.rank = 1
     
-    result = []
-    all_occs = sorted(self.occurences + other.occurences)
-    total_len = len(all_occs)
-    for i in range(0, total_len-1):
-      _and = all_occs[i] & all_occs[i+1] 
-      if _and is not None:
-        if all_occs[i].rank == 2 and all_occs[i+1].rank == 1:
-          substraction_result = all_occs[i] - all_occs[i+1]
-        elif all_occs[i].rank == 1 and all_occs[i+1].rank == 2:
-          substraction_result = all_occs[i+1] - all_occs[i]
-        elif all_occs[i].rank == 1 and all_occs[i+1].rank == 1:
-          # no substraction at all here: what should we do ? (should not happen)
-          substraction_result = None
-        if type(substraction_result) == Interval:
-          result.append(substraction_result)
-        elif type(substraction_result) == list:
-          for elt in substraction_result:
-            result.append(elt)
-        elif type(substraction_result) is None:
-          pass
-      #else:
-      #  if all_occs[i].rank == 2:
-      #    result.append(all_occs[i])
+    if type(other) == Interval:
+      other.rank = 1
+      all_occs = sorted(self.occurences + [other])
+    elif type(other) == datetime.datetime:
+      interv = Interval(other, other)
+      interv.rank = 1
+      all_occs = sorted(self.occurences + [interv])
+    elif type(other) == Session or type(other) == CalculatedSession:
+      for occ in other.occurences:
+        occ.rank = 1
+      all_occs = sorted(self.occurences + other.occurences)
+    else:
+      raise TypeError("Can not substract Session with %s" % type(other))    
+  
+    recover = True
+    while recover: # continues until only disjoint Intervals are present
+      #print "----- new loop ------"
+      #print all_occs
+      #print "---------------------"
+      total_len = len(all_occs)
+      prec_occ = []
+      result = []
+      recover = False
+      for i in range(0, total_len-1):
+        _and = all_occs[i] & all_occs[i+1] 
+        if _and is not None:
+          if all_occs[i].rank == 2 and all_occs[i+1].rank == 1:
+            substraction_result = all_occs[i] - all_occs[i+1]
+            prec_occ = all_occs[i]
+          elif all_occs[i].rank == 1 and all_occs[i+1].rank == 2:
+            # the period to be subtracted begins before
+            substraction_result = all_occs[i+1] - all_occs[i]
+            prec_occ = all_occs[i+1]
+          elif all_occs[i].rank == 1 and all_occs[i+1].rank == 1:
+            # no substraction at all here: what should we do ? (should not happen)
+            substraction_result = None
+          
+          if type(substraction_result) == Interval:
+            #print 'append sub: %s (i=%s)' % (substraction_result,i)
+            #prec_occ = substraction_result
+            result.append(substraction_result)
+          elif type(substraction_result) == list:
+            for elt in substraction_result:
+              #print 'append sub multiple result: %s (i=%s)' % (elt,i)
+              #prec_occ = elt #TODO: test this, shoul not work...
+              result.append(elt)
+          elif substraction_result is None:
+            pass
+          else:
+            raise TypeError('uknown type result for Interval substraction_result : %s' % type(substraction_result))
+          #recover = True
+        else:
+          if all_occs[i] not in prec_occ: 
+            if all_occs[i].rank == 2:
+              #print 'append alone: %s (i=%s)' % (all_occs[i],i)
+              result.append(all_occs[i])
+          if i == total_len-2:
+            if all_occs[i+1].rank == 2:
+              #print 'append last: %s (i=%s)' % (all_occs[i+1],i)
+              result.append(all_occs[i+1])
+            
+      all_occs = sorted(result)
           
     for occ in self.occurences:
       occ.rank = None
-    for occ in other.occurences:
-      occ.rank = None
-
+      
+    try:
+      for occ in other.occurences:
+        occ.rank = None
+    except:
+      pass
+      
     return CalculatedSession(result)
     
   def __getitem__(self, _slice):
