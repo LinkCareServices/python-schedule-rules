@@ -484,22 +484,50 @@ class TestSessionSub3(TestSession):
     assert datetime.datetime(2022,6,30,11,00) not in self.result_list   
 
 
-class TestSessionSub3(TestSession):
+class TestSessionSub4(TestSession):
   """In this test, the B interval is within A, so sub should result in 
   spltting this results in two intervals"""
   def setUp(self):
     TestSession.setUp(self)
-    self.ses_p2 = Session("Test2", duration=60*3,start_hour=15, start_minute=30)
+    self.ses_p2 = Session("Test2", duration=37,start_hour=15, start_minute=30)
     self.ses_p2.add_rule("Tous les jours", 
                  freq=rrule.DAILY,
-                 dtstart=datetime.date(2021,8,15), 
+                 dtstart=datetime.date(2011,9,15), 
                  interval=1,
-                 until = datetime.date(2022,6,30)  
+                 until = datetime.date(2011,12,30)  
                 )
     self.result_list = self.ses_p - self.ses_p2
 
   def test_1(self):
-    pass #TODO
+    assert datetime.datetime(2011,9,15,13,45) in self.result_list
+
+  def test_2(self):
+    assert datetime.datetime(2011,9,15,15,45) not in self.result_list
+
+  def test_3(self):
+    assert datetime.datetime(2011,9,15,16,45) in self.result_list
+
+class TestSessionSub5(TestSession):
+  """In this test, the intervals are completely disjoints, 
+  so a - b == a and b - a == b
+  """
+  def setUp(self):
+    TestSession.setUp(self)
+    self.ses_p2 = Session("Test2", duration=32,start_hour=11, start_minute=00)
+    self.ses_p2.add_rule("Tous les jours", 
+                 freq=rrule.DAILY,
+                 dtstart=datetime.date(2011,9,15), 
+                 interval=1,
+                 until = datetime.date(2011,12,30)  
+                )
+    self.result_list = self.ses_p - self.ses_p2
+
+  def test_1(self):
+    assert self.result_list == self.ses_p
+
+  def test_2(self):
+    result2 = self.ses_p2 - self.ses_p
+    assert result2 == self.ses_p2
 
 class TestSessionSubSpecialCases(TestSession):
   def setUp(self):
@@ -525,5 +553,5 @@ class TestSessionSubSpecialCases(TestSession):
 if __name__ == "__main__":
   import sys
   suite = unittest.findTestCases(sys.modules[__name__])  
-  #suite = unittest.TestLoader().loadTestsFromTestCase(TestSessionSub3)
+  #suite = unittest.TestLoader().loadTestsFromTestCase(TestSessionSub5)
   unittest.TextTestRunner(verbosity=2).run(suite)
