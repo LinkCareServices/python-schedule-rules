@@ -23,7 +23,8 @@ import datetime
 def find(_list, _search):
   """find item in a list an returns the item position and the position itsef
   """
-  return next(((i, x) for i, x in enumerate(_list) if x == _search), (None, None))
+  return next(((i, x) for i, x in enumerate(_list) if x == _search), \
+                                                                 (None, None))
 
 class Interval(object):
   """Represent an interval (espacialy date interval)
@@ -41,7 +42,8 @@ class Interval(object):
   
   def __init__(self, start, end):
     if start > end:
-      raise ValueError('Start (%s) must not be greater than end (%s)' % (start, end))
+      raise ValueError('Start (%s) must not be greater than end (%s)' % \
+                                                                 (start, end))
     self.start = start
     self.end = end
 
@@ -80,13 +82,13 @@ class Interval(object):
     or None
     """
     if (self.start <= other.start <= other.end <= self.end):
-      return Interval(other.start,other.end)
+      return Interval(other.start, other.end)
     elif (self.start <= other.start <= self.end):
-      return Interval(other.start,self.end)
+      return Interval(other.start, self.end)
     elif (self.start <= other.end <= self.end):
-      return Interval(self.start,other.end)
+      return Interval(self.start, other.end)
     elif (other.start <= self.start <= self.end <= other.end):
-      return Interval(self.start,self.end)
+      return Interval(self.start, self.end)
     else:
       return None
   
@@ -184,7 +186,7 @@ class SRules(object):
       if session.session_type == 'add':
         if len(new_occurences) == 0: 
           # first session, add all the occurences
-           new_occurences2 = session.get_occurences()
+          new_occurences2 = session.get_occurences()
         else:
           for new_occ in new_occurences:
             # on prend chaque occurence de la nouvelle session et on la
@@ -254,10 +256,10 @@ class SRules(object):
   def in_period(self, the_date=datetime.datetime.now(), return_period=False):
     pass
     
-  def next_period(self, the_date=datetime.datetime.now(), inclusive=True):
+  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     pass
     
-  def prev_period(self, the_date=datetime.datetime.now(), inclusive=True):
+  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     pass
     
 class Session(object):
@@ -416,7 +418,7 @@ class Session(object):
     use with 'in' keyword:
        if my_interval in my_session:
          
-    for method use, prefer 'in_period()'
+    for method use, prefer 'in_interval()'
     
     return True if yes or False if not
     
@@ -453,13 +455,13 @@ class Session(object):
     else:
       return False
 
-  def in_period(self, other, return_interval=False):
+  def in_interval(self, other, return_interval=False):
     """public wrapper for __contains__
     mainly used when needed to set return_interval to True
     
     Args:
      other -- can be: (see __contains__)
-     return_interval -- boolean : if True return the resulting period instead
+     return_interval -- boolean : if True return the resulting interval instead
                                   of boolean value.
                                   
     Returns:
@@ -625,11 +627,12 @@ class Session(object):
             substraction_result = all_occs[i] - all_occs[i+1]
             prec_occ = all_occs[i]
           elif all_occs[i].rank == 1 and all_occs[i+1].rank == 2:
-            # the period to be subtracted begins before
+            # the interval to be subtracted begins before
             substraction_result = all_occs[i+1] - all_occs[i]
             prec_occ = all_occs[i+1]
           elif all_occs[i].rank == 1 and all_occs[i+1].rank == 1:
-            # no substraction at all here: what should we do ? (should not happen)
+            # no substraction at all here: what should we do ? 
+            # (should not happen)
             substraction_result = None
           
           if type(substraction_result) == Interval:
@@ -688,16 +691,17 @@ class Session(object):
     rrule_params.setdefault('cache', True)
     
     if 'count' not in rrule_params and 'until' not in rrule_params:
-      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+5))
+      rrule_params.setdefault('until', 
+                              datetime.datetime.now()+relativedelta(years=+5))
     
     if 'dtstart' in rrule_params:
       if isinstance(rrule_params['dtstart'], datetime.date):
-        rrule_params['dtstart']+=relativedelta(hours=self.start_hour, 
-                                               minutes=self.start_minute)
+        rrule_params['dtstart'] += relativedelta(hours=self.start_hour, 
+                                                 minutes=self.start_minute)
     if 'until' in rrule_params:
       if isinstance(rrule_params['until'], datetime.date):
-         rrule_params['until']+=relativedelta(hours=self.start_hour, 
-                                                minutes=self.start_minute)
+        rrule_params['until'] += relativedelta(hours=self.start_hour, 
+                                               minutes=self.start_minute)
     self.set.rrule(rrule.rrule(**rrule_params))
     self._recalculate_occurences()
     self.rules.append({ 'type':'add', 'label':label, 'rule':rrule_params})
@@ -710,38 +714,41 @@ class Session(object):
     rrule_params.setdefault('cache', True)
     
     if 'count' not in rrule_params and 'until' not in rrule_params:
-      rrule_params.setdefault('until', datetime.datetime.now()+relativedelta(years=+5))
+      rrule_params.setdefault('until', 
+                              datetime.datetime.now()+relativedelta(years=+5))
 
     if 'dtstart' in rrule_params:
       if isinstance(rrule_params['dtstart'], datetime.date):
-        rrule_params['dtstart']+=relativedelta(hours=self.start_hour, 
-                                               minutes=self.start_minute)
+        rrule_params['dtstart'] += relativedelta(hours=self.start_hour, 
+                                                 minutes=self.start_minute)
     if 'until' in rrule_params:
       if isinstance(rrule_params['until'], datetime.date):
-         rrule_params['until']+=relativedelta(hours=self.start_hour, 
-                                                minutes=self.start_minute)
+        rrule_params['until'] += relativedelta(hours=self.start_hour, 
+                                               minutes=self.start_minute)
     
     self.set.exrule(rrule.rrule(**rrule_params))
     self._recalculate_occurences()
     self.rules.append({ 'type':'exclude', 'label':label, 'rule':rrule_params})
 
-  def _occurences_in_period(self, start, end):
-    """return a list of occurences within a given period (start and end
+  def _occurences_in_interval(self, start, end):
+    """return a list of occurences within a given interval (start and end
     datetime)
     """
     occurences = []
     for occ in list(self.set.between(start, end, True)):
-      occurences.append(Interval(occ, occ+relativedelta(minutes=+self.duration)))
+      occurences.append(Interval(occ, 
+                                 occ+relativedelta(minutes=+self.duration)))
     return occurences
     
   def _recalculate_occurences(self):
     """Recalculate all the occurences (static list) in the object
     """
-    # after adding a rule, we need to recompute the period list
+    # after adding a rule, we need to recompute the interval list
     new_occurences = []
     new_total_duration = 0
     for occ in list(self.set):
-      new_occurences.append(Interval(occ, occ+relativedelta(minutes=+self.duration)))
+      new_occurences.append(Interval(occ, 
+                                     occ+relativedelta(minutes=+self.duration)))
       new_total_duration += self.duration
     self.occurences = new_occurences
     self.total_duration = new_total_duration
@@ -752,8 +759,8 @@ class Session(object):
   def get_occurences(self):
     return self.occurences
   
-  def next_period(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the next period (Interval)
+  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
+    """Returns the next interval (Interval)
     for a given date.
     If the date is inside a period and inclusive is set to True, returns
     the 'current' period. Otherwise, returns the next period
@@ -767,8 +774,8 @@ class Session(object):
       after = self.set.after(the_date, True)
       return Interval(after, after+relativedelta(minutes=+self.duration))
       
-  def prev_period(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the next period (Interval)
+  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
+    """Returns the next interval (Interval)
     for a given date.
     If the date is inside a period and inclusive is set to True, returns
     the 'current' period. Otherwise, returns the next period
@@ -826,17 +833,38 @@ class CalculatedSession(Session):
     """cancel this method"""
     return None
       
-  def _occurences_in_period(self, start, end):  
+  def _occurences_in_interval(self, start, end):  
     """cancel this method : WHY ? need to be rewritten using self.occurences"""
     return None
 
-  def next_period(self, the_date=datetime.datetime.now(), inclusive=True):
+  def between(self, start, end, inclusive=True):
+    """Returns All Intervals between start and end date
+    
+    Args:
+      start     -- datetime : date and time of the beginning of the period
+      end       -- datetime : date and time of the end of the period
+      inclusive -- boolean  : if True and if start or end is inside an
+                              Interval, it will include the resulting Intervals  
+    
+    Returns:
+      CalculatedSession -- containing all the Interval between start and end
+      if no result, returns and 'empty' CalculatedSession object.
+    """
+    pass
+
+  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     """Returns the next period (Interval)
     for a given date.
     If the date is inside a period and inclusive is set to True, returns
     the 'current' period. Otherwise, returns the next period
     
-    Return None if no period is found
+    Args:
+      the_date -- datetime : date and time to be tested
+      inclusive -- boolean : if True and if the_date is inside an
+                             Interval, it will return this Interval
+    Returns:
+      Interval -- and Interval object if found                         
+      None if no interval is found
     
     note: this CalculatedSession version can not use rules to find the period
     so, it iter the Interval list
@@ -861,7 +889,7 @@ class CalculatedSession(Session):
           return_next = True     
     return None
   
-  def prev_period(self, the_date=datetime.datetime.now(), inclusive=True):
+  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     """Returns the previous period (Interval)
     for a given date.
     If the date is inside a period and inclusive is set to True, returns
