@@ -151,42 +151,42 @@ class TestSessionInPeriod(TestSession):
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
 
 
-class TestSessionNextPeriod1(TestSession):
+class TestSessionNextinterval1(TestSession):
   def setUp(self):
     TestSession.setUp(self)
     
   def test_1(self):
     result_expected = Interval(datetime.datetime(2011,9,27,13,30), datetime.datetime(2011,9,27,21,30))
-    result = self.ses_p.next_period(datetime.datetime(2011,9,27,15,40))
+    result = self.ses_p.next_interval(datetime.datetime(2011,9,27,15,40))
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
 
   def test_2(self):
     result_expected = Interval(datetime.datetime(2011,10,1,13,30), datetime.datetime(2011,10,1,21,30))
-    result = self.ses_p.next_period(datetime.datetime(2011,9,27,15,40), False)
+    result = self.ses_p.next_interval(datetime.datetime(2011,9,27,15,40), False)
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
 
   def test_3(self):
     result_expected = Interval(datetime.datetime(2011,10,1,13,30), datetime.datetime(2011,10,1,21,30))
-    result = self.ses_p.next_period(datetime.datetime(2011,9,28,15,40))
+    result = self.ses_p.next_interval(datetime.datetime(2011,9,28,15,40))
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
     
-class TestSessionPrevPeriod1(TestSession):
+class TestSessionPrevinterval1(TestSession):
   def setUp(self):
     TestSession.setUp(self)
     
   def test_1(self):
     result_expected = Interval(datetime.datetime(2011,9,27,13,30), datetime.datetime(2011,9,27,21,30))
-    result = self.ses_p.prev_period(datetime.datetime(2011,9,27,15,40))
+    result = self.ses_p.prev_interval(datetime.datetime(2011,9,27,15,40))
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
 
   def test_2(self):
     result_expected = Interval(datetime.datetime(2011,9,26,13,30), datetime.datetime(2011,9,26,21,30))
-    result = self.ses_p.prev_period(datetime.datetime(2011,9,27,15,40), False)
+    result = self.ses_p.prev_interval(datetime.datetime(2011,9,27,15,40), False)
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
 
   def test_3(self):
     result_expected = Interval(datetime.datetime(2011,9,27,13,30), datetime.datetime(2011,9,27,21,30))
-    result = self.ses_p.prev_period(datetime.datetime(2011,9,28,15,40))
+    result = self.ses_p.prev_interval(datetime.datetime(2011,9,28,15,40))
     assert result == result_expected, "bad result ? got %s instead of %s" % (result, result_expected)
      
 class TestSessionAdd1(TestSession):

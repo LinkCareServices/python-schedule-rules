@@ -563,7 +563,6 @@ class Session(object):
           result.append(prec_occ)
           recover = True
         else:
-          # TODO:Pb Here, some date are not added....
           if all_occs[i] not in prec_occ: 
             result.append(all_occs[i])
           if i == total_len-2:
@@ -642,12 +641,12 @@ class Session(object):
           elif type(substraction_result) == list:
             for elt in substraction_result:
               #print 'append sub multiple result: %s (i=%s)' % (elt,i)
-              #prec_occ = elt #TODO: test this, shoul not work...
               result.append(elt)
           elif substraction_result is None:
             pass
           else:
-            raise TypeError('uknown type result for Interval substraction_result : %s' % type(substraction_result))
+            raise TypeError('uknown type result for Interval \
+substraction_result : %s' % type(substraction_result))
           #recover = True
         else:
           if all_occs[i] not in prec_occ: 
@@ -663,12 +662,6 @@ class Session(object):
           
     for occ in self.occurences:
       occ.rank = None
-      
-    try:
-      for occ in other.occurences:
-        occ.rank = None
-    except:
-      pass
       
     return CalculatedSession(result)
     
@@ -729,16 +722,6 @@ class Session(object):
     self.set.exrule(rrule.rrule(**rrule_params))
     self._recalculate_occurences()
     self.rules.append({ 'type':'exclude', 'label':label, 'rule':rrule_params})
-
-  def _occurences_in_interval(self, start, end):
-    """return a list of occurences within a given interval (start and end
-    datetime)
-    """
-    occurences = []
-    for occ in list(self.set.between(start, end, True)):
-      occurences.append(Interval(occ, 
-                                 occ+relativedelta(minutes=+self.duration)))
-    return occurences
     
   def _recalculate_occurences(self):
     """Recalculate all the occurences (static list) in the object
@@ -754,11 +737,26 @@ class Session(object):
     self.total_duration = new_total_duration
     
   def get_rules(self):
+    """Returns the list of rrules
+    """
     return list(self.set)
 
   def get_occurences(self):
+    """Returns the list of all the interval
+    calculated based on the input rrules
+    """
     return self.occurences
-  
+
+  def between(self, start, end, inclusive=True):
+    """return a list of occurences within a given interval (start and end
+    datetime)
+    """
+    occurences = []
+    for occ in list(self.set.between(start, end, inclusive)):
+      occurences.append(Interval(occ, 
+                                 occ+relativedelta(minutes=+self.duration)))
+    return CalculatedSession(occurences)
+      
   def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     """Returns the next interval (Interval)
     for a given date.
@@ -833,10 +831,6 @@ class CalculatedSession(Session):
     """cancel this method"""
     return None
       
-  def _occurences_in_interval(self, start, end):  
-    """cancel this method : WHY ? need to be rewritten using self.occurences"""
-    return None
-
   def between(self, start, end, inclusive=True):
     """Returns All Intervals between start and end date
     
@@ -850,7 +844,18 @@ class CalculatedSession(Session):
       CalculatedSession -- containing all the Interval between start and end
       if no result, returns and 'empty' CalculatedSession object.
     """
-    pass
+    start_interv = self.next_interval(start, inclusive)
+    end_interv = self.prev_interval(end, inclusive)
+    result = []
+    start_to_add = False
+    for interv in self.occurences:
+      if interv == start_interv:
+        start_to_add = True
+      if start_to_add:
+        result.append(interv)
+      if interv == end_interv:
+        start_to_add = False
+    return CalculatedSession(result)
 
   def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
     """Returns the next period (Interval)
