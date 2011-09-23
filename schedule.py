@@ -128,140 +128,7 @@ class Interval(object):
     """return a hash of the object wich should be unique
     """
     return hash((self.start, self.end))
-
-class SRules(object):
-  """SRule = Schedule Rules object
-  
-  It store an ordered list of sessions which will be processed in that order
-  to generate an occurence list.
-  It handle 'add' and 'exclude' sessions.
-  
-  each session is a set of rules 'normal rules' which indicates periods of
-  time that the person should be working. This rules can include 'exclude' rules
-  if they are indended to decribe the 'normal' session.
-  
-  Ex. (person at work)
-  session1 (add) = all the week days from 08:00 to 18:00 : aka all the normal working days
-  session2 (exclude) = All the days between 1st April and 13th April : holidays
-  session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
-  ...
-  
-  """
-  name = ""
-  sessions = []
-  occurences = []
-  auto_refresh = True
-  total_duration = 0
-
-  def __init__(self, name, auto_refresh=True):
-    """SRules constructor
-    """
-    self.name = name
-    self.auto_refresh = auto_refresh
-
-  def __iter__(self):
-    """iterable"""
-    return self._forward()
-
-  def _forward(self):
-    """forward generator"""
-    current_item = 0
-    total_len = len(self.occurences)
-    while (current_item < total_len):
-      interval = self.occurences[current_item]
-      current_item += 1
-      yield interval
-
-  def _in_occurence(self, occurence, _date):
-    pass
-
-  def _recalculate_occurences(self):
-    """Recalculate all the occurences (static list) in the object
-    """
-    # after adding a rule, we need to recompute the period list
-    new_occurences = []
-    new_total_duration = 0
-    for session in self.sessions:
-      new_occurences2 = []
-      if session.session_type == 'add':
-        if len(new_occurences) == 0: 
-          # first session, add all the occurences
-          new_occurences2 = session.get_occurences()
-        else:
-          for new_occ in new_occurences:
-            # on prend chaque occurence de la nouvelle session et on la
-            # matche avec chaque occurence des sessions actuelles
-            # les occurences sont sensées être ordonnées, donc si la fin de
-            # l'occurence actuelle précéde le début des occurences testées, on
-            # peut stopper et l'insérer là.
-            for occ in session.occurences:
-              if occ[0] < new_occ[0]: 
-                # la nouvelle commence avant, 2 possibilités :
-                #    - elles se recouvrent et il faut merger
-                #    - elles ne se recouvrent pas et il faut ajouter
-                if occ[1] < new_occ[0]:
-                  # ne se recouvrent pas : on ajoute
-                  new_occurences2.append(occ)
-                  
-            
-      elif session.session_type == 'exclude':
-        if len(new_occurences) == 0:
-          # Error, we can not exclude and empty list, skip
-          print "an 'exclude' session can not be in first position: skip"
-        else:
-          pass
-      new_occurences = new_occurences2
-      
-    self.occurences = new_occurences
-    self.total_duration = new_total_duration
-    #return new_occurences
-        
-  def add_session(self, session):
-    """add new session for this person
-    
-    description -- sting -- description of the session
-    session -- Session object
-    
-    the session object must be already instanciated
-    """
-    self.sessions.append(session)
-    # here, see if we recalculate all the time of if we recalculate only on 
-    # demand
-    if self.auto_refresh:
-      self._recalculate_occurences()
-      
-  def remove_session(self, name_or_pos):
-    """Remove of session in the list
-    you can provide an integer for the position
-    or a session name
-    """
-    if type(name_or_pos) == int:
-      self.sessions.pop(name_or_pos)
-    elif type(name_or_pos) == str:
-      pos, session = find(self.sessions, name_or_pos)
-      if pos is not None:
-        self.sessions.pop(pos)
-    if self.auto_refresh:
-      self._recalculate_occurences()
-
-  def move_session(self, old_position, new_position):
-    """Move a session in the list
-    Used to change the order, and perhaps behaviour of the SRules
-    """
-    self.sessions.insert(new_position, self.sessions.pop(old_position))
-    
-    if self.auto_refresh:
-      self._recalculate_occurences()
-    
-  def in_period(self, the_date=datetime.datetime.now(), return_period=False):
-    pass
-    
-  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    pass
-    
-  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    pass
-    
+   
 class Session(object):
   """ This objects is a representation of a standard 'session'
   It has a calendar (dateutil) rruleset with one or many rrules inside
@@ -920,4 +787,97 @@ class CalculatedSession(Session):
         return last_period
       last_period = elt
     return None
+
+class SRules(CalculatedSession):
+  """SRule = Schedule Rules object
+
+  It store an ordered list of sessions which will be processed in that order
+  to generate an occurence list.
+  It handle 'add' and 'exclude' sessions.
+
+  each session is a set of rules 'normal rules' which indicates periods of
+  time that the person should be working. This rules can include 'exclude' rules
+  if they are indended to decribe the 'normal' session.
+
+  Ex. (person at work)
+  session1 (add) = all the week days from 08:00 to 18:00 : aka all the normal working days
+  session2 (exclude) = All the days between 1st April and 13th April : holidays
+  session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
+  ...
+  """
+  name = ""
+  sessions = []
+  occurences = []
+  auto_refresh = True
+  total_duration = 0
+
+  def __init__(self, name, auto_refresh=True):
+    """SRules constructor
+    """
+    CalculatedSession.__init__(self)
     
+    self.name = name
+    self.auto_refresh = auto_refresh
+
+  def add_rule(self, label="", **rrule_params):
+    """cancel this method"""
+    return None
+
+  def exclude_rule(self, label="", **rrule_params):
+    """cancel this method"""
+    return None
+
+  def add_session(self, session):
+    """add new session for this person
+
+    description -- string -- description of the session
+    session -- Session object
+
+    the session object must be already instanciated
+    """
+    self.sessions.append(session)
+    # here, see if we recalculate all the time of if we recalculate only on 
+    # demand
+    if self.auto_refresh:
+      self._recalculate_occurences()
+
+  def remove_session(self, name_or_pos):
+    """Remove of session in the list
+    you can provide an integer for the position
+    or a session name
+    """
+    if type(name_or_pos) == int:
+      self.sessions.pop(name_or_pos)
+    elif type(name_or_pos) == str:
+      pos, session = find(self.sessions, name_or_pos)
+      if pos is not None:
+        self.sessions.pop(pos)
+    if self.auto_refresh:
+      self._recalculate_occurences()
+
+  def move_session(self, old_position, new_position):
+    """Move a session in the list
+    Used to change the order, and perhaps behaviour of the SRules
+    """
+    self.sessions.insert(new_position, self.sessions.pop(old_position))
+
+    if self.auto_refresh:
+      self._recalculate_occurences()
+
+  def _recalculate_occurences(self):
+    """Recalculate all the occurences (static list) in the object
+    """
+    # after adding a rule, we need to recompute the period list
+    new_occurences = []
+    new_total_duration = 0
+    for _session in self.sessions:
+      new_occurences2 = CalculatedSession(new_occurences)
+      if _session.session_type == 'add':
+        new_occurences2 = new_occurences2 + _session
+      elif _session.session_type == 'exclude':
+        new_occurences2 = new_occurences2 - _session
+      new_occurences = list(new_occurences2)
+
+    self.occurences = new_occurences
+    self.total_duration = new_total_duration
+    #return new_occurences
