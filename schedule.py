@@ -667,13 +667,6 @@ class Session(object):
     else:
       raise TypeError("Can not calculate Session and %s" % type(other))
 
-    #TODO: bug ici vraissemblablement : all_occs est redefini ci-dessous
-    # et du coup les all_occss du dessus sont inutiles ?
-
-    #all_occs = sorted(self.occurences + other.occurences)
-    #Correctif de ci dessus: commentaire de cette ligne au profil
-    # du if/elif du dessus
-
     total_len = len(all_occs)
     for i in range(0, total_len-2):
       _and = all_occs[i] & all_occs[i+1] 
