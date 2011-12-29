@@ -5,9 +5,23 @@
 #
 """Schedule Rules
 
-Useful urls:
-python-dateutil : http://labix.org/python-dateutil
-python operators : http://docs.python.org/library/operator.html
+Schedule Rules offer a set of tools used to define and manipulate
+scheduled elements, based on date Intervals
+(like meetings events, etc..)
+
+It is based on *python-dateutil* and uses the same rrule mecanism as a basis.
+But unlike python-datetuil which describes only time-events, Schedule Rules
+uses the rrule mecanism to describes time-interval (and of course recurring
+time intervals).
+
+Usage of this tool can be limited to define
+and work wich :py:class:`schedule.SRules`
+
+Dependancies:
+  python-dateutil : http://labix.org/python-dateutil
+
+Useful URL:
+  python operators : http://docs.python.org/library/operator.html
 
 """
 
@@ -23,36 +37,76 @@ import datetime
 def find(_list, _search):
   """find item in a list an returns the item position and the position itsef
   """
-  return next(((i, x) for i, x in enumerate(_list) if x == _search), \
-                                                                 (None, None))
+  return next(((i, x) for i, x in enumerate(_list) if x == _search),
+              (None, None))
 
 class Interval(object):
-  """Represent an interval (espacialy date interval)
-  
-  start : represent the datetime of the period start
-    end : represent the datetime of the period end
+  """Represent an interval (especialy date interval)
+
+    Args:
+      :start:   represent the datetime of the period start
+      :end:     represent the datetime of the period end
     
-  rank : usually not used, but can be set with a value (numeric values)
-         this will prioritize Intervals between them if in the same list
-         (used for substracting interval lists)
   """
   start = None
   end = None
   rank = None
-  
+
   def __init__(self, start, end):
+    """Interval Constructor
+
+    *Args:*
+      (see Class Description : :py:class:`schedule.Interval` )
+
+    *Returns:*
+      *Nothing*
+
+    """
     if start > end:
       raise ValueError('Start (%s) must not be greater than end (%s)' % \
                                                                  (start, end))
     self.start = start
     self.end = end
 
+
+  def __unicode__(self):
+    """Returns unicode string describting the objects and his content
+
+    *Args:*
+      *None*
+
+    *Returns:*
+      :unicode: unicode string representation
+                of an :py:class:`schedule.Interval`
+
+    """
+    return u"%s --> %s" % (self.start, self.end)
+
   def __repr__(self):
-    """Representation of object"""
-    return "%s --> %s" % (self.start, self.end)
+    """Representation of object
+
+    *Args:*
+      *None*
+
+    *Returns:*
+      :string: string representation of an :py:class:`schedule.Interval`
+
+    """
+    return unicode(self).encode('utf-8')
 
   def __eq__(self, other):
-    """equality operator
+    """'==' operator
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        if Interval1 == Interval2:
+          ...
+
+    *Returns:*
+      :boolean: True if equal, False if not
+
     """
     if self.start == other.start and self.end == other.end:
       return True
@@ -60,52 +114,119 @@ class Interval(object):
       return False
       
   def __cmp__(self, other):
+    """comparaison operator
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        if Interval1 > Interval2:
+          ...
+
+        if Interval1 <= Interval2:
+          ...
+
+    .. warning:: The comparaison operator only compare the start date of the
+       interval : because Interval can supoerpose each others, it is not
+       possible to compare the full interval. Be careful when using
+       comparaisons
+    """
     return cmp(self.start, other.start)
       
   def __contains__(self, other):
-    """test if other is contained inside self
-    return True if yes or False
+    """'in' operator
+
+    Test if and interval is contained inside the other
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        if Interval1 in Interval2:
+          ...
+
+    *returns:*
+      :boolean: True if yes, False if not
     """
     if type(other) == Interval:
-      if (self.start <= other.start <= other.end <= self.end):
+      if self.start <= other.start <= other.end <= self.end:
         return True
       else:
         return False
     elif type(other) == datetime.datetime:
-      if (self.start <= other <= other <= self.end):
+      if self.start <= other <= other <= self.end:
         return True
       else:
         return False
 
   def __and__(self, other):
-    """returns the interval in intersection between the two input intervals
-    or None
+    """'&' operator
+
+    returns the interval in intersection between the two input intervals
+    or None if there is no intersection
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        Interval3 = Interval1 & Interval2
+
+
+    *return:*
+      :Interval: Interval object
+
     """
-    if (self.start <= other.start <= other.end <= self.end):
+    if self.start <= other.start <= other.end <= self.end:
       return Interval(other.start, other.end)
-    elif (self.start <= other.start <= self.end):
+    elif self.start <= other.start <= self.end:
       return Interval(other.start, self.end)
-    elif (self.start <= other.end <= self.end):
+    elif self.start <= other.end <= self.end:
       return Interval(self.start, other.end)
-    elif (other.start <= self.start <= self.end <= other.end):
+    elif other.start <= self.start <= self.end <= other.end:
       return Interval(self.start, self.end)
     else:
       return None
   
   def __add__(self, other):
-    """if intersection, returns a new interval based on max extremities
-    if no intersection : ?? (returns 2 intervals or None ??)
+    """'+' operator
+
+    Add two Intervals
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        result = Interval1 + Interval2
+
+
+    *returns:*
+      * if intersection, returns a new interval based on max extremities
+      * if no intersection : returns a tuple with the 2 intervals given in args
+
     """
     if self & other:
       return Interval(min(self.start, other.start), 
                       max(self.end, other.end))
     else:
-      return (self, other)
+      return self, other
       
-  def __sub__(self, other): # chercher si il y a un operateur comme pour __add__
-    """if intersection, returns a new (smaller) interval : self - other
-    if other inside self, can return 2 new intervals
-    if other ouside self, return a tuple (self, other)
+  def __sub__(self, other):
+    """'-' operator
+
+    Substract two Intervals
+
+    *Usage example:*
+
+    .. code-block:: python
+
+        result = Interval1 - Interval2
+
+
+    *returns:*
+      * if intersection, returns a new (smaller) interval : self - other
+      * if other inside self, return 2 new intervals
+      * if other outside self, return a tuple (self, other)
+
     """
     if other == self:
       return None 
@@ -125,7 +246,7 @@ class Interval(object):
         return [other, self]
         
   def __hash__(self):
-    """return a hash of the object wich should be unique
+    """return a hash of the object which should be unique
     """
     return hash((self.start, self.end))
    
@@ -140,35 +261,96 @@ class Session(object):
   So you only need to specify one or more rule, and the Session class
   will automatically calculate all the resulting Intervals
   
-  In a Session object it never authorised to directly manipulate the
+  In a Session object it's never authorised to directly manipulate the
   calculated Intervals, because the good behaviour is to update the rules which
   are the only way to define a Session
   
   The Session object provides tools to manipulate the data :
-  - it's iterable and gettable: for elt in my_session: ... 
-                                my_session[2:5]
-  - you can add a Session to another Session : my_session + other_session
-  - you can substract Session to another Session : my_session - other_session
-  - you can compare equality between Sessions : my_session == other_session
-  - you can calculate intersection between Sessions : my_session & other_session
-  - you can test if object in inside the Session : if datetime.now() in my_session:
-  
+
+  - it's iterable and gettable:
+
+    .. code-block:: python
+
+      for elt in my_session:
+        ...
+
+    .. code-block:: python
+
+      my_session[2:5]
+      ...
+
+  - you can add a Session to another Session :
+
+    .. code-block:: python
+
+      my_session + other_session
+
+  - you can substract Session to another Session :
+
+    .. code-block:: python
+
+      my_session - other_session
+
+  - you can compare equality between Sessions :
+
+    .. code-block:: python
+
+      my_session == other_session
+
+  - you can calculate intersection between Sessions :
+
+    .. code-block:: python
+
+      my_session & other_session
+
+  - you can test if object in inside the Session :
+
+    .. code-block:: python
+
+      if datetime.now() in my_session:
+        ...
+
   Some of this calculation result can not be defined inside a Session anymore
-  (because it's not anymore only on rrule set and onr interval but more than
-  one), this calculation results are returned with another object : 
-  CalculatedSession (see documentation of this object for more infos)
-  
+  (because it's not anymore only on rrule set and on interval but more than
+  one), this calculation results are returned in another object :
+  :py:class:`schedule.CalculatedSession`
+
+  To be able to use session correctly, you have to :
+
+  - first to instanciate a Session object
+  - Then to add at least one rule using :py:meth:`schedule.Session.add_rule`
+
   usage example:
-  
-  from shedule import Session
-  # instanciace a Session with interval from [11h30 to 13h30]
-  my_session = Session("Test", duration=60*2, start_hour=11, start_minute=35)
-  my_session.add_rule("Every Day", 
-                      freq=rrule.DAILY,
-                      dtstart=datetime.date(2011,8,15), 
-                      interval=1,
-                      until = datetime.date(2012,6,30)  
-                      )
+
+  .. code-block:: python
+
+     from shedule import Session
+     # instanciace a Session with interval from [11h30 to 13h30]
+     my_session = Session("Test", duration=60*2, start_hour=11, start_minute=35)
+     my_session.add_rule("Every Day",
+                         freq=rrule.DAILY,
+                         dtstart=datetime.date(2011,8,15),
+                         interval=1,
+                         until = datetime.date(2012,6,30)
+                        )
+
+
+  *Args:*
+      :session_name: (string) : the (if possible unique)
+                     name you choose for this session
+      :start_hour: (int [0-23]) :
+      :start_minute: (int [0-59]) : the time (hour, minute) of the
+        beginning of each period calculated by rules.
+
+      :duration: (int) : duration (in minutes) of each period for this session
+      :session_type: (string) : either 'add' or 'exclude' :
+                     flags the type of the session.
+                     It is used in Srules object : a session
+                     'add' will add its values to other sessions
+                     and the 'exclude' will remove his values to other
+                     sessions
+      :session_description: (string) : free text to describe your session
+
   """
 
   def __init__(self, session_name="", duration=60, start_hour=0, start_minute=0,
@@ -177,25 +359,15 @@ class Session(object):
 
     At creation the object is set with initial parameters, but no rule, so
     no 'calculated intervals'
-    you'll need to call at least one time the .add_rule() method to add a rule
+    you'll need to call at least one time the
+    :py:meth:`schedule.Session.add_rule` method to add a rule
     
-    Args:
-      session_name -- str : the (if possible unique) name you choose for this
-                            session
-      start_hour -- int ([0-23])  
-      start_minute -- int ([0-59]) : the time (hour, minute) of the
-        beginning of each period calculated by rules.
-      
-      duration -- int : duration (in minutes) of each period for this session
-      session_tyoe -- str : either 'add' or 'exclude' : flags the type of the
-                            session. It is used in Srules object : an session
-                            'add' will add his values to other sessions
-                            and the 'exclude' will remove his values to other
-                            sessions
-      session_description -- str : free text to describe your session
-      
-    Returns:
+    *Args:*
+      (see class description: :py:class:`schedule.Session` )
+
+    *Returns:*
       <nothing>
+
     """
     self.session_name = session_name
     self.session_type = session_type
@@ -219,53 +391,114 @@ class Session(object):
     # "backup" of rules, in order to be able to reprocess them
     self.rules = []
 
+  def __unicode__(self):
+    """Returns unicode string describting the objects and his content
+
+    *Args:*
+      *None*
+
+    *Returns:*
+      :unicode: unicode string representation
+                of an :py:class:`schedule.Interval`
+
+    """
+    return u"%s" % self.session_name
+
+  def __repr__(self):
+    """Representation of object
+
+    *Args:*
+      *None*
+
+    *Returns:*
+      :string: string representation of an :py:class:`schedule.Interval`
+
+    """
+    return unicode(self).encode('utf-8')
+
   def __iter__(self):
     """iterable
-    (see _forward)
+    (see :py:meth:`schedule.Session._forward` )
     """
     return self._forward()
 
   def _forward(self):
     """forward generator, used for iteration
-    (like in this sample :
-    for elt in my_session:
-      print elt 
-    )
+
+    usage example:
+
+      .. code-block:: python
+
+        for elt in my_session:
+          print elt
+
     """
     current_item = 0
     total_len = len(self.occurences)
-    while (current_item < total_len):
+    while current_item < total_len:
       interval = self.occurences[current_item]
       current_item += 1
       yield interval
   
   def __len__(self):
     """calculate and return len of Session object
-    Warning: It returns the number of intervals in this object, not the total duration
-    of all Intervals
-    
-    Args:
+
+    .. warning:: It returns the number of intervals in this object,
+       not the total duration of all Intervals
+
+    usage example:
+
+      .. code-block:: python
+
+        print len(my_session)
+
+    *Args:*
       <none>
       
-    Returns:
-     int -- number of Intervals in this session
+    *Returns:*
+     :int: number of Intervals in this session
+
     """
     return len(self.occurences)
     
   def __eq__(self, other):
-    """returns a comparaison between self and anoter object
+    """'==' operator
+
+    returns a comparaison between self and anoter object
     can compare two objects of same type and also compare object
     to a string
     
-    Warning, if you compare Session object with a string, it will compare
-    the Session object name to that string, so be careful and try to have
-    unique names for your sessions if you plan to compare equality by names
-    
-    Args:
-      other -- can be:
-         Session,
-         CalculatedSession,
-         str
+    .. warning:: if you compare Session object with a string, it will compare
+      the Session object name to that string, so be careful and try to have
+      unique names for your sessions if you plan to compare equality by names
+
+    usage examples:
+
+      .. code-block:: python
+
+        if my_session == other_session:
+          ...
+
+
+      .. code-block:: python
+
+        if my_session == "Test Session":
+          ...
+
+      .. code-block:: python
+
+        if my_session == any_calculated_session:
+          ...
+
+    *Args:*
+      :other: can be:
+         * Session,
+         * CalculatedSession,
+         * str
+
+    *Returns:*
+      :boolean: True if equal, False if not
+
     """
     if isinstance(other, Session) or isinstance(other, CalculatedSession):
       return self.occurences == other.occurences
@@ -274,44 +507,52 @@ class Session(object):
     else:
       raise TypeError("Can not compare Session to %s" % type(other))
  
-  def __str__(self):
-    """returns a string describing the Session
-    """
-    return self.session_name
- 
   def __contains__(self, other, return_interval=False):
-    """test if an interval or a datetime is contained inside self
+    """'in' operator
+
+    test if an interval or a datetime is contained inside the session
+
+    usage examples:
+
+      .. code-block:: python
+
+        if an_interval in my_session:
+          ...
+
+
+      .. code-block:: python
+
+        if datetime.datetime.now() in my_session:
+          ...
+
+    see also :py:class:`schedule.Session.in_interval`
     
-    use with 'in' keyword:
-       if my_interval in my_session:
+    *Args:*
+      :other: can be:
+         * Interval
+         * datetime
          
-    for method use, prefer 'in_interval()'
-    
-    return True if yes or False if not
-    
-    Args:
-     other -- can be:
-         Interval,
-         datetime
-         
-     return_interval -- boolean : if True return the resulting period instead
+      :return_interval: (boolean) : if True return the resulting period instead
                                   of boolean value.
                                   
-    Returns:
-      boolean: True if other in self, False if not
-    or:
-      Interval: matching if other in self, None if not
+    *Returns:*
+      :boolean: True if other in self, False if not
+
+      or:
+
+      :Interval: matching if other in self, None if not
+
     """
     if type(other) == Interval:
       for occ in self.occurences:
-        if (occ.start <= other.start <= other.end <= occ.end):
+        if occ.start <= other.start <= other.end <= occ.end:
           if return_interval:
             return occ
           else:
             return True
     elif type(other) == datetime.datetime:
       for occ in self.occurences:
-        if (occ.start <= other <= occ.end):
+        if occ.start <= other <= occ.end:
           if return_interval:
             return occ
           else:
@@ -323,43 +564,98 @@ class Session(object):
       return False
 
   def in_interval(self, other, return_interval=False):
-    """public wrapper for __contains__
-    mainly used when needed to set return_interval to True
-    
-    Args:
-     other -- can be: (see __contains__)
-     return_interval -- boolean : if True return the resulting interval instead
+    """public wrapper for :py:class:`schedule.Session.__contains__`
+    mainly used when needed to set *return_interval* to True
+
+    usage examples:
+
+      .. code-block:: python
+
+        result_interval = my_session.in_interval(any_interval, True)
+          ...
+
+
+    *Args:*
+      :other: can be:
+
+         * Interval
+         * datetime
+
+      :return_interval: (boolean) : if True return the resulting period instead
                                   of boolean value.
-                                  
-    Returns:
-      boolean: True if other in self, False if not
-    or:
-      Interval: matching if other in self, None if not
+
+    .. note:: The Interval returned when return_interval is set to True is
+       the matching Interval in the session which contain entirely the
+       tested_interval
+
+    *Returns:*
+
+      * if *return_interval* is set to False:
+
+        :boolean: True if other in self, False if not
+
+      * if *return_interval* is set to True:
+
+        :None: if not match
+
+        or:
+
+        :Interval: matching if other in self
+
     """
     return self.__contains__(other, return_interval)
     
   def __and__(self, other):
-    """Calculate intersection Session and another object
+    """'&' operator
 
-    Args:
-     other -- can be:
-        Session,
-        CalculatedSession,
-        Interval,
-        datetime,
-        None
+    Calculate intersection Session and another object
+
+    usage examples:
+
+      .. code-block:: python
+
+        result = my_session & other_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session & other_calculated_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session & other_interval
+          ...
+
+      .. code-block:: python
+
+        result = my_session & datetime.datetime.now()
+          ...
+
+
+    *Args:*
+     :other: can be:
+
+        * Session
+        * CalculatedSession
+        * Interval
+        * datetime
+        * None
      
-    returns:
-    a CalculatedSession object with the result of the calculation
-     (if no result, the CalculatedSession is empty, but it's still a
-     CalculatedSession Object)
+    *Returns:*
+    a :py:class:`schedule.CalculatedSession` object with the result
+    of the calculation (if no result, the
+    :py:class:`schedule.CalculatedSession` is empty, but it's still a
+    :py:class:`schedule.CalculatedSession` Object)
+
+
     """
     result = []
     if other is None:
       return CalculatedSession([])
-    if len(other) == 0:
+    if not len(other):
       return CalculatedSession([])
-    if len(self) == 0:
+    if not len(self):
       return CalculatedSession([])
       
     if type(other) == Interval:
@@ -370,8 +666,14 @@ class Session(object):
       all_occs = sorted(self.occurences + other.occurences)
     else:
       raise TypeError("Can not calculate Session and %s" % type(other))
-      
-    all_occs = sorted(self.occurences + other.occurences)
+
+    #TODO: bug ici vraissemblablement : all_occs est redefini ci-dessous
+    # et du coup les all_occss du dessus sont inutiles ?
+
+    #all_occs = sorted(self.occurences + other.occurences)
+    #Correctif de ci dessus: commentaire de cette ligne au profil
+    # du if/elif du dessus
+
     total_len = len(all_occs)
     for i in range(0, total_len-2):
       _and = all_occs[i] & all_occs[i+1] 
@@ -397,9 +699,9 @@ class Session(object):
     """
     if other is None:
       return CalculatedSession(self.occurences)
-    if len(other) == 0:
+    if not len(other):
       return CalculatedSession(self.occurences)
-    if len(self) == 0:
+    if not len(self):
       return CalculatedSession(other.occurences)
     
     if type(other) == Interval:
@@ -410,7 +712,8 @@ class Session(object):
       all_occs = sorted(self.occurences + other.occurences)
     else:
       raise TypeError("Can not add Session with %s" % type(other))
-      
+
+    result = []
     recover = True
     while recover: # continues until only disjoint Intervals are present
       total_len = len(all_occs)
@@ -455,9 +758,9 @@ class Session(object):
     """
     if other is None:
       return CalculatedSession(self.occurences)
-    if len(other) == 0:
+    if not len(other):
       return CalculatedSession(self.occurences)
-    if len(self) == 0:
+    if not len(self):
       return CalculatedSession([])
     
     for occ in self.occurences:
@@ -475,8 +778,9 @@ class Session(object):
         occ.rank = 1
       all_occs = sorted(self.occurences + other.occurences)
     else:
-      raise TypeError("Can not substract Session with %s" % type(other))    
-  
+      raise TypeError("Can not substract Session with %s" % type(other))
+
+    result = []
     recover = True
     while recover: # continues until only disjoint Intervals are present
       #print "----- new loop ------"
@@ -489,6 +793,7 @@ class Session(object):
       for i in range(0, total_len-1):
         _and = all_occs[i] & all_occs[i+1] 
         if _and is not None:
+          substraction_result = None
           if all_occs[i].rank == 2 and all_occs[i+1].rank == 1:
             substraction_result = all_occs[i] - all_occs[i+1]
             prec_occ = all_occs[i]
@@ -648,13 +953,13 @@ substraction_result : %s' % type(substraction_result))
     Return None if no period is found
     """
     period_in = self.__contains__(the_date, return_interval=True)
-    if  period_in and inclusive:
+    if period_in and inclusive:
       return period_in
     else:
       previous = self.set.before(the_date, True)
       if period_in:
         if period_in.start == previous:
-          previous = self.set.before(previous, False)
+          previous = self.set.before(previous)
       return Interval(previous, previous+relativedelta(minutes=+self.duration))
 
 class CalculatedSession(Session):
@@ -701,15 +1006,16 @@ class CalculatedSession(Session):
   def between(self, start, end, inclusive=True):
     """Returns All Intervals between start and end date
     
-    Args:
-      start     -- datetime : date and time of the beginning of the period
-      end       -- datetime : date and time of the end of the period
-      inclusive -- boolean  : if True and if start or end is inside an
+    **Args:**
+      :start: (datetime) : date and time of the beginning of the period
+      :end: (datetime) : date and time of the end of the period
+      :inclusive: (boolean) : if True and if start or end is inside an
                               Interval, it will include the resulting Intervals  
     
-    Returns:
-      CalculatedSession -- containing all the Interval between start and end
-      if no result, returns and 'empty' CalculatedSession object.
+    **Returns:**
+      :CalculatedSession: containing all the Interval between start and end
+         if no result, returns and 'empty' CalculatedSession object.
+
     """
     start_interv = self.next_interval(start, inclusive)
     end_interv = self.prev_interval(end, inclusive)
@@ -730,15 +1036,18 @@ class CalculatedSession(Session):
     If the date is inside a period and inclusive is set to True, returns
     the 'current' period. Otherwise, returns the next period
     
-    Args:
-      the_date -- datetime : date and time to be tested
-      inclusive -- boolean : if True and if the_date is inside an
-                             Interval, it will return this Interval
-    Returns:
-      Interval -- and Interval object if found                         
-      None if no interval is found
+    **Args:**
+      :the_date: (datetime) : date and time to be tested
+
+        default: datetime.datetime.now()
+      :inclusive: (boolean) : if True and if the_date is inside an
+        Interval, it will return this Interval
+    **Returns:**
+      :Interval: an Interval object if found
+      :None: if no interval is found
     
-    note: this CalculatedSession version can not use rules to find the period
+    *Note:*
+    this CalculatedSession version can not use rules to find the period
     so, it iter the Interval list
     """
     # some shotcuts (occurences are sorted):
@@ -800,9 +1109,13 @@ class SRules(CalculatedSession):
   if they are indended to decribe the 'normal' session.
 
   Ex. (person at work)
-  session1 (add) = all the week days from 08:00 to 18:00 : aka all the normal working days
-  session2 (exclude) = All the days between 1st April and 13th April : holidays
-  session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
+  * session1 (add) = all the week days from 08:00 to 18:00 :
+  aka all the normal working days
+
+  * session2 (exclude) = All the days between 1st April and 13th April : holidays
+
+  * session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
+
   ...
   """
   name = ""

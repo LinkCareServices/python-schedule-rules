@@ -195,7 +195,7 @@ class TestSessionAdd1(TestSession):
     self.ses_p2 = Session("Test2", duration=60*3,start_hour=11, start_minute=30)
     self.ses_p2.add_rule("Tous les jours", 
                  freq=rrule.DAILY,
-                 dtstart=datetime.date(2011,8,30), 
+                 dtstart=datetime.date(2011,8,30),
                  interval=1,
                  until = datetime.date(2015,8,30)  
                 )
