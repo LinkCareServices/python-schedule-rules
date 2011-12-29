@@ -3,9 +3,8 @@
 #
 # Copyright 2011 Link Care Services
 #
-"""Schedule Rules
-
-Schedule Rules offer a set of tools used to define and manipulate
+"""
+Schedule Rules module offer a set of tools used to define and manipulate
 scheduled elements, based on date Intervals
 (like meetings events, etc..)
 
@@ -676,19 +675,51 @@ class Session(object):
     return CalculatedSession(result)
     
   def __add__(self, other):
-    """Calculate addition between Session and other object
+    """'+' operator
+
+    Calculate addition between Session and other object
+
+    usage examples:
+
+      .. code-block:: python
+
+        result = my_session + other_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session + other_calculated_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session + other_interval
+          ...
+
+      .. code-block:: python
+
+        result = my_session + datetime.datetime.now()
+          ...
+
+    .. note:: if you add a datetime to a session, it will in fact add
+         an Interval (a very small Interval) with
+         start = end = the_given_datetime
+
+    *Args:*
+     :other: can be:
+
+        * Session
+        * CalculatedSession
+        * Interval
+        * datetime
+        * None
     
-    other can be : 
-     Session,
-     CalculatedSession
-     Interval,
-     datetime,
-     None
-    
-    returns:
-     a CalculatedSession object with the result of the calculation
-     (if no result, the CalculatedSession is empty, but it's still a
-     CalculatedSession Object)
+    *Returns:*
+    a :py:class:`schedule.CalculatedSession` object with the result
+    of the calculation (if no result, the
+    :py:class:`schedule.CalculatedSession` is empty, but it's still a
+    :py:class:`schedule.CalculatedSession` Object)
+
     """
     if other is None:
       return CalculatedSession(self.occurences)
@@ -735,19 +766,51 @@ class Session(object):
     return CalculatedSession(result)
     
   def __sub__(self, other):
-    """Calculate substration between Session and other object
+    """'-' operator
+
+    Calculate substration between Session and other object
     
-    other can be : 
-     Session,
-     CalculatedSession
-     Interval,
-     datetime,
-     None
-    
-    returns:
-     a CalculatedSession object with the result of the calculation
-     (if no result, the CalculatedSession is empty, but it's still a
-     CalculatedSession Object)
+    usage examples:
+
+      .. code-block:: python
+
+        result = my_session - other_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session - other_calculated_session
+          ...
+
+      .. code-block:: python
+
+        result = my_session - other_interval
+          ...
+
+      .. code-block:: python
+
+        result = my_session - datetime.datetime.now()
+          ...
+
+    .. note:: if you subtract a datetime to a session, it will in fact
+         substract an Interval (a very small Interval) with
+         start = end = the_given_datetime
+
+    *Args:*
+     :other: can be:
+
+        * Session
+        * CalculatedSession
+        * Interval
+        * datetime
+        * None
+
+    *Returns:*
+    a :py:class:`schedule.CalculatedSession` object with the result
+    of the calculation (if no result, the
+    :py:class:`schedule.CalculatedSession` is empty, but it's still a
+    :py:class:`schedule.CalculatedSession` Object)
+
     """
     if other is None:
       return CalculatedSession(self.occurences)
@@ -831,19 +894,62 @@ substraction_result : %s' % type(substraction_result))
     return CalculatedSession(result)
     
   def __getitem__(self, _slice):
-    """Returns and Interval object
-    
-    usage examples: 
-      my_session[5]
-      my_session[2:8]
-      my_session[:5]
-      my_session[-5:]
-      ...
+    """slice operator
+
+    usage examples:
+
+      .. code-block:: python
+
+          interv = my_session[5]
+
+      .. code-block:: python
+
+          print my_session[2:8]
+
+      .. code-block:: python
+
+          print my_session[:5]
+
+      .. code-block:: python
+
+          print my_session[-5:]
+
+    *returns:*
+      :Interval: one Interval object
+
+    or
+
+      :list: a list of Interval objects if returns more than one value
+
     """
     return self.occurences[_slice]
     
   def add_rule(self, label="", **rrule_params):
     """add a recuring rule for this Session
+
+    It uses the http://labix.org/python-dateutil syntax, so please refer
+    to the dateutil documentation for more samples and explanation
+
+    a Session object contains a rruleset object (wich is a set of rrules)
+
+    the :py:meth:`schedule.Session.add_rule` method add a rrule to the
+    Session rrule set, using the dateutil methods and arguments.
+
+    usage examples:
+
+      .. code-block:: python
+
+          my_session.add_rule("label1",
+                              freq=rrule.DAILY,
+                              dtstart=datetime.date(2011,8,25),
+                              interval = 5,
+                              until=datetime.date(2012,1,1)
+                             )
+
+    *Args:*
+      see python-dateutil documentation
+      http://labix.org/python-dateutil#head-cf004ee9a75592797e076752b2a889c10f445418
+
     """
     rrule_params.setdefault('freq', rrule.DAILY)
     rrule_params.setdefault('cache', True)
@@ -854,19 +960,21 @@ substraction_result : %s' % type(substraction_result))
     
     if 'dtstart' in rrule_params:
       if isinstance(rrule_params['dtstart'], datetime.date):
-        rrule_params['dtstart'] += relativedelta(hours=self.start_hour, 
+        rrule_params['dtstart'] += relativedelta(hours=self.start_hour,
                                                  minutes=self.start_minute)
     if 'until' in rrule_params:
       if isinstance(rrule_params['until'], datetime.date):
-        rrule_params['until'] += relativedelta(hours=self.start_hour, 
+        rrule_params['until'] += relativedelta(hours=self.start_hour,
                                                minutes=self.start_minute)
     self.set.rrule(rrule.rrule(**rrule_params))
     self._recalculate_occurences()
     self.rules.append({ 'type':'add', 'label':label, 'rule':rrule_params})
     
   def exclude_rule(self, label="", **rrule_params):
-    """exclure a recuring to the set
-    the rule can be set to be only one day
+    """exclude a recuring rrule to this Session
+
+    see :py:meth:`schedule.Session.add_rule` for more explanation
+
     """
     rrule_params.setdefault('freq', rrule.DAILY)
     rrule_params.setdefault('cache', True)
@@ -890,6 +998,11 @@ substraction_result : %s' % type(substraction_result))
     
   def _recalculate_occurences(self):
     """Recalculate all the occurences (static list) in the object
+
+    This method is used by :py:meth:`schedule.Session.add_rule` and
+    :py:meth:`schedule.Session.exclude_rule` in order to maintain
+    a static list of Intervals based on the rrule given in input.
+
     """
     # after adding a rule, we need to recompute the interval list
     new_occurences = []
@@ -903,18 +1016,45 @@ substraction_result : %s' % type(substraction_result))
     
   def get_rules(self):
     """Returns the list of rrules
+
+    *Args:*
+      <none>
+
+    *Returns:*
+      :list: a list of all the rrules in the rrule set for this session
+
     """
     return list(self.set)
 
   def get_occurences(self):
     """Returns the list of all the interval
     calculated based on the input rrules
+
+    *Args:*
+      <none>
+
+    *Returns:*
+      :list: (Interval) a list of Interval objects
+
     """
     return self.occurences
 
   def between(self, start, end, inclusive=True):
-    """return a list of occurences within a given interval (start and end
-    datetime)
+    """Return all occurences between two dates
+
+    *Args:*
+      :start: (datetime) : the date and time starting the period
+      :end: (datetime) : the date and time ending the period
+      :inclusive: (boolean) : if True returns also Interval starting or
+                              ending by *start* or *end*.
+                              To make a mathematic parallel:
+                              True is like [start-end]
+                              False is like ]start-end[
+
+    +Returns:*
+      :CalculatedSession: a :py:class:`schedule.CalculatedSession` containing
+        all the Interval within start and end
+
     """
     occurences = []
     for occ in list(self.set.between(start, end, inclusive)):
@@ -922,29 +1062,49 @@ substraction_result : %s' % type(substraction_result))
                                  occ+relativedelta(minutes=+self.duration)))
     return CalculatedSession(occurences)
       
-  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the next interval (Interval)
-    for a given date.
+  def next_interval(self, the_date=None, inclusive=True):
+    """Returns the next interval (Interval) for a given date.
     If the date is inside a period and inclusive is set to True, returns
     the 'current' period. Otherwise, returns the next period
     
     Return None if no period is found
+
+    *Args:*
+      :the_date: (datetime), by default if not given : now()
+      :inclusive: (boolean)
+
+    *Returns:*
+      :Interval: the next Interval
+
     """
+    if the_date is None:
+      the_date = datetime.datetime.now()
+
     period_in = self.__contains__(the_date, return_interval=True)
-    if  period_in and inclusive:
+    if period_in and inclusive:
       return period_in
     else:
       after = self.set.after(the_date, True)
       return Interval(after, after+relativedelta(minutes=+self.duration))
       
-  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the next interval (Interval)
-    for a given date.
+  def prev_interval(self, the_date=None, inclusive=True):
+    """Returns the previous interval (Interval) for a given date.
     If the date is inside a period and inclusive is set to True, returns
-    the 'current' period. Otherwise, returns the next period
+    the 'current' period. Otherwise, returns the previous period
     
     Return None if no period is found
+
+    *Args:*
+      :the_date: (datetime), by default if not given : now()
+      :inclusive: (boolean)
+
+    *Returns:*
+      :Interval: the previos Interval
+
     """
+    if the_date is None:
+      the_date = datetime.datetime.now()
+
     period_in = self.__contains__(the_date, return_interval=True)
     if period_in and inclusive:
       return period_in
@@ -958,25 +1118,42 @@ substraction_result : %s' % type(substraction_result))
 class CalculatedSession(Session):
   """a CalculatedSession is the result of manipulation of one or more sessions
   and when a Session can not be defined by rules anymore
-  ex:
-  Session + Session = CalculatedSession
-  Session - Session = CalculatedSession
-  
-  Sessions and CalculatedSessions share same method (like __add__, __sub__, etc..)
-  but not others (like "add_rule" and all the other rules related methods)
-  
-  A CalculatedSession is not defined by rrules anymore, because they are the
+
+  usage examples:
+
+    .. code-block:: python
+
+      calc_session = my_session + other_session
+
+    .. code-block:: python
+
+      calc_session = my_session - other_session
+
+  CalculatedSession inherit all methods from Session, so they share all
+  method and functionnality **except 3:**
+
+    * *add_rule*
+    * *exclude_rule*
+    * *_recalculate_occurences*
+
+  Obviously, these 3 method can not apply to a CalculatedSession object
+  which is static by construction : a CalculatedSession is not defined
+  by rrules anymore, because they are the
   result of some merging / extraction of differents Session, Intervals or dates
+
+  Plase see :py:class:`schedule.Session` for all other object and
+  method documentations.
+
+  *Args:*
+    can be:
+      :Interval list: a list of Intervals
+      :Session: a Session object
+      :CalculatedSession: another CalculatedSession object
+      :None: None object (resulting to an empty CalculatedSession object)
+
   """
   
   def __init__(self, const_list=None):
-    """Initalisation is done by giving :
-      a list of Intervals 
-      a Session object
-      a CalculatedSession object
-      
-     (or None if the list will be added later)
-    """
     Session.__init__(self)
     
     if type(const_list) == list:
@@ -985,31 +1162,23 @@ class CalculatedSession(Session):
       self.occurences = sorted(const_list.occurences)
       
   def add_rule(self, label="", **rrule_params):
-    """cancel this method"""
-    return None
-    
+    raise NotImplementedError(
+      "'CalculatedSession' object does not implement 'add_rule'")
+
   def exclude_rule(self, label="", **rrule_params):
-    """cancel this method"""
-    return None
+    raise NotImplementedError(
+      "'CalculatedSession' object does not implement 'exclude_rule'")
+
+  def get_rules(self):
+    raise NotImplementedError(
+      "'CalculatedSession' object does not implement 'get_rules'")
 
   def _recalculate_occurences(self):
-    """cancel this method"""
-    return None
+    raise NotImplementedError(
+      "'CalculatedSession' object does not implement '_recalculate_occurences'")
       
   def between(self, start, end, inclusive=True):
-    """Returns All Intervals between start and end date
-    
-    **Args:**
-      :start: (datetime) : date and time of the beginning of the period
-      :end: (datetime) : date and time of the end of the period
-      :inclusive: (boolean) : if True and if start or end is inside an
-                              Interval, it will include the resulting Intervals  
-    
-    **Returns:**
-      :CalculatedSession: containing all the Interval between start and end
-         if no result, returns and 'empty' CalculatedSession object.
-
-    """
+    #see :py:meth:`schedule.Session.between`
     start_interv = self.next_interval(start, inclusive)
     end_interv = self.prev_interval(end, inclusive)
     result = []
@@ -1023,27 +1192,12 @@ class CalculatedSession(Session):
         start_to_add = False
     return CalculatedSession(result)
 
-  def next_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the next period (Interval)
-    for a given date.
-    If the date is inside a period and inclusive is set to True, returns
-    the 'current' period. Otherwise, returns the next period
-    
-    **Args:**
-      :the_date: (datetime) : date and time to be tested
-
-        default: datetime.datetime.now()
-      :inclusive: (boolean) : if True and if the_date is inside an
-        Interval, it will return this Interval
-    **Returns:**
-      :Interval: an Interval object if found
-      :None: if no interval is found
-    
-    *Note:*
-    this CalculatedSession version can not use rules to find the period
-    so, it iter the Interval list
-    """
+  def next_interval(self, the_date=None, inclusive=True):
+    #see :py:meth:`schedule.Session.next_interval`
     # some shotcuts (occurences are sorted):
+    if the_date is None:
+      the_date = datetime.datetime.now()
+
     if self.occurences[0].start > the_date:
       return None
     if self.occurences[-1].end < the_date:
@@ -1063,18 +1217,12 @@ class CalculatedSession(Session):
           return_next = True     
     return None
   
-  def prev_interval(self, the_date=datetime.datetime.now(), inclusive=True):
-    """Returns the previous period (Interval)
-    for a given date.
-    If the date is inside a period and inclusive is set to True, returns
-    the 'current' period. Otherwise, returns the prev period
-    
-    Return None if no period is found
-    
-    note: this CalculatedSession version can not use rules to find the period
-    so, it iter the Interval list
-    """
+  def prev_interval(self, the_date=None, inclusive=True):
+    #see :py:meth:`schedule.Session.prev_interval`
     # some shotcuts (occurences are sorted):
+    if the_date is None:
+      the_date = datetime.datetime.now()
+
     if self.occurences[0].start > the_date:
       return None
     if self.occurences[-1].end < the_date:
@@ -1091,25 +1239,93 @@ class CalculatedSession(Session):
     return None
 
 class SRules(CalculatedSession):
-  """SRule = Schedule Rules object
+  """SRules : Schedule Rules Class
 
-  It store an ordered list of sessions which will be processed in that order
-  to generate an occurence list.
-  It handle 'add' and 'exclude' sessions.
+  SRules stores an ordered list of sessions which will be processed
+  in that order to generate an occurence list.
+  It can handle 'add' and 'exclude' sessions.
 
-  each session is a set of rules 'normal rules' which indicates periods of
-  time that the person should be working. This rules can include 'exclude' rules
+  Each session is a set of rules ('normal rules') which indicates periods of
+  time. This rules can include 'exclude' rules (in rrule terms)
   if they are indended to decribe the 'normal' session.
 
-  Ex. (person at work)
-  * session1 (add) = all the week days from 08:00 to 18:00 :
-  aka all the normal working days
+  SRules inherit all methods from CalculatedSession, so they share all
+  method and functionnality with **one difference** :
 
-  * session2 (exclude) = All the days between 1st April and 13th April : holidays
+    * *_recalculate_occurences* is again defined.
 
-  * session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
+  SRules has also 3 new methods :
 
-  ...
+    * :py:class:`schedule.SRules.add_session`
+    * :py:class:`schedule.SRules.remove_session`
+    * :py:class:`schedule.SRules.move_session`
+
+
+  .. note:: Ex. (person at work)
+
+    * session1 (add) = all the week days from 08:00 to 18:00 :
+      aka all the normal working days
+
+    * session2 (exclude) = All the days between 1st April and 13th April : holidays
+
+    * session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
+
+    code:
+
+    .. code-block:: python
+
+      import datetime
+      from schedule import Session, SRules, Interval, CalculatedSession
+      from dateutil.relativedelta import relativedelta
+
+      from dateutil import rrule
+
+      ses1 = Session("Work", duration=60*10,start_hour=8, start_minute=00)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,22), interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,23), interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,24), interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,25), interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,26), interval = 7)
+
+      ses2 = Session("Hollidays",
+                     session_type='exclude',
+                     duration=60*24,
+                     start_hour=00,
+                     start_minute=00)
+      ses2.add_rule("",
+                    freq=rrule.DAILY,
+                    dtstart= datetime.date(2012,4, 1),
+                    until = datetime.date(2012,4, 13),
+                    interval = 1)
+
+      ses3 = Session("ExtraWorkDay", duration=60*3, start_hour=14, start_minute=00)
+      ses3.add_rule("",
+                    freq=rrule.DAILY,
+                    count = 1,
+                    dtstart= datetime.date(2011,7, 10))
+
+      my_srule = SRules("Test")
+      my_srule.add_session(ses1)
+      my_srule.add_session(ses2)
+      my_srule.add_session(ses3)
+
+      datetime.datetime(2012, 4,2,15,30) in my_srule
+      Out[26]: False
+
+      my_srule.remove_session("Hollidays")
+      datetime.datetime(2012, 4,2,15,30) in my_srule
+      Out[29]: True
+
+  *Args:*
+    :name:  (string) : a name you choose for this SRules object
+    :auto_refresh: (boolean) :
+
+      * if True, _recalculate_occurences will be done
+        every time a session is added, removed or moved
+
+      * if False, you'll have to call _recalculate_occurences manually. It can
+        save some CPU when creating complex or big SRules.
+
   """
   name = ""
   sessions = []
@@ -1118,39 +1334,58 @@ class SRules(CalculatedSession):
   total_duration = 0
 
   def __init__(self, name, auto_refresh=True):
-    """SRules constructor
-    """
     CalculatedSession.__init__(self)
     
     self.name = name
     self.auto_refresh = auto_refresh
 
-  def add_rule(self, label="", **rrule_params):
-    """cancel this method"""
-    return None
-
-  def exclude_rule(self, label="", **rrule_params):
-    """cancel this method"""
-    return None
-
   def add_session(self, session):
-    """add new session for this person
+    """add new session to SRules object
 
-    description -- string -- description of the session
-    session -- Session object
+    usage examples:
 
-    the session object must be already instanciated
+    .. code-block:: python
+
+      my_srules.add_session(my_new_session)
+
+    *Args:*
+      :session: (Session) the session object you want to add.
+        the object needs to be instanciated before adding it to the SRules
+
+    *Returns:*
+      <nothing>
+
     """
     self.sessions.append(session)
-    # here, see if we recalculate all the time of if we recalculate only on 
-    # demand
+
     if self.auto_refresh:
       self._recalculate_occurences()
 
   def remove_session(self, name_or_pos):
-    """Remove of session in the list
-    you can provide an integer for the position
-    or a session name
+    """Remove a (previously added) session of the objects.
+
+    usage examples:
+
+    .. code-block:: python
+
+      my_srules.remove_session("Session Test")
+
+    .. code-block:: python
+
+      my_srules.remove_session(3)
+
+
+    *Args:*
+      :name_or_pos: can be either:
+
+          * *string* : the name of the session you're trying to remove
+
+          * *int* : the position (in the session list) of the session you're
+              trying to remove
+
+    *Returns:*
+      <nothing>
+
     """
     if type(name_or_pos) == int:
       self.sessions.pop(name_or_pos)
@@ -1158,12 +1393,28 @@ class SRules(CalculatedSession):
       pos, session = find(self.sessions, name_or_pos)
       if pos is not None:
         self.sessions.pop(pos)
+      else:
+        raise KeyError("No Session '%s' found" % name_or_pos)
     if self.auto_refresh:
       self._recalculate_occurences()
 
   def move_session(self, old_position, new_position):
     """Move a session in the list
-    Used to change the order, and perhaps behaviour of the SRules
+    Used to change the order, and possibliy the behaviour of the SRules
+
+    usage examples:
+
+      .. code-block:: python
+
+        my_srules.move_session(1,3)
+
+    *Args:*
+      :old_position: (int) old position of the session in the list
+      :new_position: (int) new position of the session in the list
+
+    *Returns:*
+      <nothing>
+
     """
     self.sessions.insert(new_position, self.sessions.pop(old_position))
 
@@ -1172,18 +1423,28 @@ class SRules(CalculatedSession):
 
   def _recalculate_occurences(self):
     """Recalculate all the occurences (static list) in the object
+
+    This method is used by :py:meth:`schedule.SRules.add_session` and
+    :py:meth:`schedule.SRules.remove_session` and
+    :py:meth:`schedule.SRules.move_session` in order to maintain
+    a static list of Intervals based on the sessions (and session order)
+    inside the SRules object.
+
+    it can be called manually, especially when the object is created with
+    auto_refresh set to False.
+
     """
     # after adding a rule, we need to recompute the period list
-    new_occurences = []
+
+    new_calc_session = CalculatedSession([])
     new_total_duration = 0
     for _session in self.sessions:
-      new_occurences2 = CalculatedSession(new_occurences)
+      #new_occurences2 = CalculatedSession(new_occurences)
       if _session.session_type == 'add':
-        new_occurences2 = new_occurences2 + _session
+        new_calc_session = new_calc_session + _session
       elif _session.session_type == 'exclude':
-        new_occurences2 = new_occurences2 - _session
-      new_occurences = list(new_occurences2)
+        new_calc_session = new_calc_session - _session
+      #new_occurences = list(new_occurences2)
 
-    self.occurences = new_occurences
-    self.total_duration = new_total_duration
-    #return new_occurences
+    self.occurences = list(new_calc_session) #new_occurences
+    self.total_duration = new_total_duration # not used

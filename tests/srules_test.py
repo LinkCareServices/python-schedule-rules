@@ -41,6 +41,7 @@ class TestIntersection1(TestSRules):
     self.srule = SRules("Test")
     self.srule.add_session(self.ses1)
     self.srule.add_session(self.ses2)
+
   def test_1(self):
     pass
     

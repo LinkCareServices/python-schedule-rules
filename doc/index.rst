@@ -3,13 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Schedule Rules's documentation!
-==========================================
+Schedule Rules's documentation
+==============================
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 20
 
 .. automodule:: schedule
 
@@ -20,6 +20,9 @@ Srules
    :members:
    :private-members:
    :special-members:
+   :inherited-members:
+   :member-order: bysource
+   :exclude-members: __delattr__, __weakref__, __format__, __getattribute__, __hash__, __new__, __reduce__, __reduce_ex__, __setattr__, __sizeof__, __str__, __subclasshook__
 
 Session
 -------
@@ -28,6 +31,8 @@ Session
    :members:
    :private-members:
    :special-members:
+   :member-order: bysource
+   :exclude-members: __delattr__, __weakref__
 
 CalculatedSession
 -----------------
@@ -36,6 +41,9 @@ CalculatedSession
    :members:
    :private-members:
    :special-members:
+   :inherited-members:
+   :member-order: bysource
+   :exclude-members: __delattr__, __weakref__, __format__, __getattribute__, __hash__, __new__, __reduce__, __reduce_ex__, __setattr__, __sizeof__, __str__, __subclasshook__
 
 Interval
 --------
@@ -44,7 +52,8 @@ Interval
    :members:
    :private-members:
    :special-members:
-
+   :member-order: bysource
+   :exclude-members: __delattr__, __weakref__
 
 Indices and tables
 ==================
