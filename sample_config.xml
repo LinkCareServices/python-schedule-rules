@@ -1,0 +1,35 @@
+<srules xmlns:"XXXXXXXXXXX">
+    <name>XXX</name>
+    <autoRefresh>True|False</autoRefresh>
+    <session position="1">
+        <name>XXX</name>
+        <sessionType>add|exclude</sessionType>
+        <startHour>00</startHour>
+        <startMinute>00</startMinute>
+        <duration>00</duration>
+        <description>XXX</description>
+        <rule>
+            <label>XXX</label>
+            <type>add|exclude</type>
+
+            <freq>YEARLY|MONTHLY|WEEKLY|DAILY|HOURLY|MINUTELY|SECONDLY</freq>
+            <cache></cache>
+            <dtstart></dtstart>
+            <interval></interval>
+            <wkst></wkst>
+            <count></count>
+            <until></until>
+            <bysetpos></bysetpos>
+            <bymonth></bymonth>
+            <bymonthday></bymonthday>
+            <byyearday></byyearday>
+            <byweekno></byweekno>
+            <byweekday></byweekday>
+            <byhour></byhour>
+            <byminute></byminute>
+            <bysecond></bysecond>
+            <byeaster></byeaster>
+
+        </rule>
+    </session>
+</srules>
