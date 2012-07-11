@@ -22,7 +22,7 @@ import sys, os
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../src/'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Schedule Rules'
-copyright = u'2011, Thomas Chiroux'
+copyright = u'2011-2012, Link Care Services'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -185,7 +185,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'ScheduleRules.tex', u'Schedule Rules Documentation',
-   u'Thomas Chiroux', 'manual'),
+   u'Link Care Services', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -215,7 +215,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'schedulerules', u'Schedule Rules Documentation',
-     [u'Thomas Chiroux'], 1)
+     [u'Link Care Services'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -229,7 +229,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'ScheduleRules', u'Schedule Rules Documentation',
-   u'Thomas Chiroux', 'ScheduleRules', 'One line description of project.',
+   u'Link Care Services', 'ScheduleRules', 'One line description of project.',
    'Miscellaneous'),
 ]
 

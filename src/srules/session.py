@@ -33,6 +33,8 @@ from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 import datetime
 
+from interval import Interval
+
 class Session(object):
   """ This objects is a representation of a standard 'session'
   It has a calendar (dateutil) rruleset with one or many rrules inside

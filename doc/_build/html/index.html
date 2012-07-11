@@ -53,7 +53,7 @@
 <ul class="simple">
 </ul>
 </div>
-<span class="target" id="module-schedule"></span><p>Schedule Rules module offer a set of tools used to define and manipulate
+<span class="target" id="module-srules"></span><p>Schedule Rules module offer a set of tools used to define and manipulate
 scheduled elements, based on date Intervals
 (like meetings events, etc..)</p>
 <p>It is based on <em>python-dateutil</em> and uses the same rrule mecanism as a basis.
@@ -61,9 +61,9 @@ But unlike python-datetuil which describes only time-events, Schedule Rules
 uses the rrule mecanism to describes time-interval (and of course recurring
 time intervals).</p>
 <p>Usage of this tool can be limited to define
-and work wich <a class="reference internal" href="#schedule.SRules" title="schedule.SRules"><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules</span></tt></a></p>
+and work wich <tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules</span></tt></p>
 <dl class="docutils">
-<dt>Dependancies:</dt>
+<dt>Dependencies:</dt>
 <dd>python-dateutil : <a class="reference external" href="http://labix.org/python-dateutil">http://labix.org/python-dateutil</a></dd>
 <dt>Useful URL:</dt>
 <dd>python operators : <a class="reference external" href="http://docs.python.org/library/operator.html">http://docs.python.org/library/operator.html</a></dd>
@@ -71,8 +71,8 @@ and work wich <a class="reference internal" href="#schedule.SRules" title="sched
 <div class="section" id="srules">
 <h2>Srules<a class="headerlink" href="#srules" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="schedule.SRules">
-<em class="property">class </em><tt class="descclassname">schedule.</tt><tt class="descname">SRules</tt><big>(</big><em>name</em>, <em>auto_refresh=True</em><big>)</big><a class="headerlink" href="#schedule.SRules" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules">
+<em class="property">class </em><tt class="descclassname">srules.</tt><tt class="descname">SRules</tt><big>(</big><em>name</em>, <em>auto_refresh=True</em><big>)</big><a class="headerlink" href="#srules.SRules" title="Permalink to this definition">¶</a></dt>
 <dd><p>SRules : Schedule Rules Class</p>
 <p>SRules stores an ordered list of sessions which will be processed
 in that order to generate an occurence list.
@@ -90,9 +90,9 @@ method and functionnality with <strong>one difference</strong> :</p>
 <p>SRules has also 3 new methods :</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="#schedule.SRules.add_session" title="schedule.SRules.add_session"><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.add_session</span></tt></a></li>
-<li><a class="reference internal" href="#schedule.SRules.remove_session" title="schedule.SRules.remove_session"><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.remove_session</span></tt></a></li>
-<li><a class="reference internal" href="#schedule.SRules.move_session" title="schedule.SRules.move_session"><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.move_session</span></tt></a></li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.add_session</span></tt></li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.remove_session</span></tt></li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">schedule.SRules.move_session</span></tt></li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
@@ -105,47 +105,48 @@ aka all the normal working days</li>
 <li>session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day</li>
 </ul>
 <p>code:</p>
-<div class="last highlight-python"><pre>import datetime
-from schedule import Session, SRules, Interval, CalculatedSession
-from dateutil.relativedelta import relativedelta
+<div class="last highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">schedule</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">SRules</span><span class="p">,</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">CalculatedSession</span>
+<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="kn">import</span> <span class="n">relativedelta</span>
 
-from dateutil import rrule
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">rrule</span>
 
-ses1 = Session("Work", duration=60*10,start_hour=8, start_minute=00)
-ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,22), interval = 7)
-ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,23), interval = 7)
-ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,24), interval = 7)
-ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,25), interval = 7)
-ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,26), interval = 7)
+<span class="n">ses1</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="s">&quot;Work&quot;</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">60</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span><span class="n">start_hour</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">start_minute</span><span class="o">=</span><span class="mo">00</span><span class="p">)</span>
+<span class="n">ses1</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span> <span class="n">dtstart</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">22</span><span class="p">),</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">ses1</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span> <span class="n">dtstart</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">23</span><span class="p">),</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">ses1</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span> <span class="n">dtstart</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">24</span><span class="p">),</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">ses1</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span> <span class="n">dtstart</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">25</span><span class="p">),</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">ses1</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span> <span class="n">dtstart</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">26</span><span class="p">),</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span>
 
-ses2 = Session("Hollidays",
-               session_type='exclude',
-               duration=60*24,
-               start_hour=00,
-               start_minute=00)
-ses2.add_rule("",
-              freq=rrule.DAILY,
-              dtstart= datetime.date(2012,4, 1),
-              until = datetime.date(2012,4, 13),
-              interval = 1)
+<span class="n">ses2</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="s">&quot;Hollidays&quot;</span><span class="p">,</span>
+               <span class="n">session_type</span><span class="o">=</span><span class="s">&#39;exclude&#39;</span><span class="p">,</span>
+               <span class="n">duration</span><span class="o">=</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="p">,</span>
+               <span class="n">start_hour</span><span class="o">=</span><span class="mo">00</span><span class="p">,</span>
+               <span class="n">start_minute</span><span class="o">=</span><span class="mo">00</span><span class="p">)</span>
+<span class="n">ses2</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+              <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span>
+              <span class="n">dtstart</span><span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">until</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span>
+              <span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 
-ses3 = Session("ExtraWorkDay", duration=60*3, start_hour=14, start_minute=00)
-ses3.add_rule("",
-              freq=rrule.DAILY,
-              count = 1,
-              dtstart= datetime.date(2011,7, 10))
+<span class="n">ses3</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="s">&quot;ExtraWorkDay&quot;</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">60</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">start_hour</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">start_minute</span><span class="o">=</span><span class="mo">00</span><span class="p">)</span>
+<span class="n">ses3</span><span class="o">.</span><span class="n">add_rule</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+              <span class="n">freq</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span>
+              <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">dtstart</span><span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
-my_srule = SRules("Test")
-my_srule.add_session(ses1)
-my_srule.add_session(ses2)
-my_srule.add_session(ses3)
+<span class="n">my_srule</span> <span class="o">=</span> <span class="n">SRules</span><span class="p">(</span><span class="s">&quot;Test&quot;</span><span class="p">)</span>
+<span class="n">my_srule</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span><span class="n">ses1</span><span class="p">)</span>
+<span class="n">my_srule</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span><span class="n">ses2</span><span class="p">)</span>
+<span class="n">my_srule</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span><span class="n">ses3</span><span class="p">)</span>
 
-datetime.datetime(2012, 4,2,15,30) in my_srule
-Out[26]: False
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span> <span class="ow">in</span> <span class="n">my_srule</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="bp">False</span>
 
-my_srule.remove_session("Hollidays")
-datetime.datetime(2012, 4,2,15,30) in my_srule
-Out[29]: True</pre>
+<span class="n">my_srule</span><span class="o">.</span><span class="n">remove_session</span><span class="p">(</span><span class="s">&quot;Hollidays&quot;</span><span class="p">)</span>
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span> <span class="ow">in</span> <span class="n">my_srule</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="bp">True</span>
+</pre></div>
 </div>
 </div>
 <dl class="docutils">
@@ -171,23 +172,90 @@ save some CPU when creating complex or big SRules.</li>
 </dd>
 </dl>
 <dl class="method">
-<dt id="schedule.SRules.__add__">
-<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.SRules.__add__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.add_session">
+<tt class="descname">add_session</tt><big>(</big><em>session</em><big>)</big><a class="headerlink" href="#srules.SRules.add_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>add new session to SRules object</p>
+<p>usage examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span><span class="n">my_new_session</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>Args:</em></dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">session:</th><td class="field-body">(Session) the session object you want to add.
+the object needs to be instanciated before adding it to the SRules</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><em>Returns:</em></dt>
+<dd>&lt;nothing&gt;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="srules.SRules.remove_session">
+<tt class="descname">remove_session</tt><big>(</big><em>name_or_pos</em><big>)</big><a class="headerlink" href="#srules.SRules.remove_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a (previously added) session of the objects.</p>
+<p>usage examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">remove_session</span><span class="p">(</span><span class="s">&quot;Session Test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">remove_session</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>Args:</em></dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name_or_pos:</th><td class="field-body"><p class="first">can be either:</p>
+<ul class="last">
+<li><p class="first"><em>string</em> : the name of the session you&#8217;re trying to remove</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>int</em> <span class="classifier-delimiter">:</span> <span class="classifier">the position (in the session list) of the session you&#8217;re</span></dt>
+<dd><p class="first last">trying to remove</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><em>Returns:</em></dt>
+<dd>&lt;nothing&gt;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="srules.SRules.__add__">
+<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.SRules.__add__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;+&#8217; operator</p>
 <p>Calculate addition between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session + other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -217,30 +285,34 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__and__">
-<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.SRules.__and__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__and__">
+<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.SRules.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;&amp;&#8217; operator</p>
 <p>Calculate intersection Session and another object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session &amp; other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -264,15 +336,15 @@ of the calculation (if no result, the
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__contains__">
-<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.SRules.__contains__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.SRules.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;in&#8217; operator</p>
 <p>test if an interval or a datetime is contained inside the session</p>
 <p>usage examples:</p>
@@ -286,7 +358,7 @@ of the calculation (if no result, the
 </pre></div>
 </div>
 </div></blockquote>
-<p>see also <a class="reference internal" href="#schedule.Session.in_interval" title="schedule.Session.in_interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></a></p>
+<p>see also <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
 <dd><table class="first last docutils field-list" frame="void" rules="none">
@@ -327,8 +399,8 @@ of boolean value.</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.SRules.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.SRules.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;==&#8217; operator</p>
 <p>returns a comparaison between self and anoter object
 can compare two objects of same type and also compare object
@@ -382,8 +454,8 @@ unique names for your sessions if you plan to compare equality by names</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#schedule.SRules.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#srules.SRules.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>slice operator</p>
 <p>usage examples:</p>
 <blockquote>
@@ -426,15 +498,15 @@ unique names for your sessions if you plan to compare equality by names</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__iter__">
-<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules.__iter__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>iterable
-(see <a class="reference internal" href="#schedule.Session._forward" title="schedule.Session._forward"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt></a> )</p>
+(see <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt> )</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__len__">
-<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules.__len__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate and return len of Session object</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -464,8 +536,8 @@ not the total duration of all Intervals</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules.__repr__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of object</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -475,7 +547,7 @@ not the total duration of all Intervals</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -484,23 +556,27 @@ not the total duration of all Intervals</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__sub__">
-<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.SRules.__sub__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__sub__">
+<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.SRules.__sub__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;-&#8216; operator</p>
 <p>Calculate substration between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session - other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -530,15 +606,15 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.__unicode__">
-<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules.__unicode__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.__unicode__">
+<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules.__unicode__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns unicode string describting the objects and his content</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -549,7 +625,7 @@ of the calculation (if no result, the
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">unicode:</th><td class="field-body">unicode string representation
-of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -558,8 +634,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules._forward">
-<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules._forward" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules._forward">
+<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules._forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>forward generator, used for iteration</p>
 <p>usage example:</p>
 <blockquote>
@@ -571,8 +647,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.get_occurences">
-<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules.get_occurences" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.get_occurences">
+<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules.get_occurences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of all the interval
 calculated based on the input rrules</p>
 <dl class="docutils">
@@ -592,14 +668,15 @@ calculated based on the input rrules</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.in_interval">
-<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.SRules.in_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>public wrapper for <a class="reference internal" href="#schedule.Session.__contains__" title="schedule.Session.__contains__"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt></a>
+<dt id="srules.SRules.in_interval">
+<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.SRules.in_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>public wrapper for <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt>
 mainly used when needed to set <em>return_interval</em> to True</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result_interval = my_session.in_interval(any_interval, True)
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result_interval</span> <span class="o">=</span> <span class="n">my_session</span><span class="o">.</span><span class="n">in_interval</span><span class="p">(</span><span class="n">any_interval</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -667,71 +744,8 @@ tested_interval</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules.add_session">
-<tt class="descname">add_session</tt><big>(</big><em>session</em><big>)</big><a class="headerlink" href="#schedule.SRules.add_session" title="Permalink to this definition">¶</a></dt>
-<dd><p>add new session to SRules object</p>
-<p>usage examples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span><span class="n">my_new_session</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt><em>Args:</em></dt>
-<dd><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">session:</th><td class="field-body">(Session) the session object you want to add.
-the object needs to be instanciated before adding it to the SRules</td>
-</tr>
-</tbody>
-</table>
-</dd>
-<dt><em>Returns:</em></dt>
-<dd>&lt;nothing&gt;</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="schedule.SRules.remove_session">
-<tt class="descname">remove_session</tt><big>(</big><em>name_or_pos</em><big>)</big><a class="headerlink" href="#schedule.SRules.remove_session" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a (previously added) session of the objects.</p>
-<p>usage examples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">remove_session</span><span class="p">(</span><span class="s">&quot;Session Test&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">my_srules</span><span class="o">.</span><span class="n">remove_session</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt><em>Args:</em></dt>
-<dd><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">name_or_pos:</th><td class="field-body"><p class="first">can be either:</p>
-<ul class="last">
-<li><p class="first"><em>string</em> : the name of the session you&#8217;re trying to remove</p>
-</li>
-<li><dl class="first docutils">
-<dt><em>int</em> <span class="classifier-delimiter">:</span> <span class="classifier">the position (in the session list) of the session you&#8217;re</span></dt>
-<dd><p class="first last">trying to remove</p>
-</dd>
-</dl>
-</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd>
-<dt><em>Returns:</em></dt>
-<dd>&lt;nothing&gt;</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="schedule.SRules.move_session">
-<tt class="descname">move_session</tt><big>(</big><em>old_position</em>, <em>new_position</em><big>)</big><a class="headerlink" href="#schedule.SRules.move_session" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules.move_session">
+<tt class="descname">move_session</tt><big>(</big><em>old_position</em>, <em>new_position</em><big>)</big><a class="headerlink" href="#srules.SRules.move_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move a session in the list
 Used to change the order, and possibliy the behaviour of the SRules</p>
 <p>usage examples:</p>
@@ -759,12 +773,12 @@ Used to change the order, and possibliy the behaviour of the SRules</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.SRules._recalculate_occurences">
-<tt class="descname">_recalculate_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.SRules._recalculate_occurences" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.SRules._recalculate_occurences">
+<tt class="descname">_recalculate_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.SRules._recalculate_occurences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recalculate all the occurences (static list) in the object</p>
-<p>This method is used by <a class="reference internal" href="#schedule.SRules.add_session" title="schedule.SRules.add_session"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.add_session()</span></tt></a> and
-<a class="reference internal" href="#schedule.SRules.remove_session" title="schedule.SRules.remove_session"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.remove_session()</span></tt></a> and
-<a class="reference internal" href="#schedule.SRules.move_session" title="schedule.SRules.move_session"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.move_session()</span></tt></a> in order to maintain
+<p>This method is used by <tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.add_session()</span></tt> and
+<tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.remove_session()</span></tt> and
+<tt class="xref py py-meth docutils literal"><span class="pre">schedule.SRules.move_session()</span></tt> in order to maintain
 a static list of Intervals based on the sessions (and session order)
 inside the SRules object.</p>
 <p>it can be called manually, especially when the object is created with
@@ -777,12 +791,12 @@ auto_refresh set to False.</p>
 <div class="section" id="session">
 <h2>Session<a class="headerlink" href="#session" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="schedule.Session">
-<em class="property">class </em><tt class="descclassname">schedule.</tt><tt class="descname">Session</tt><big>(</big><em>session_name=''</em>, <em>duration=60</em>, <em>start_hour=0</em>, <em>start_minute=0</em>, <em>session_type='add'</em>, <em>session_description=None</em><big>)</big><a class="headerlink" href="#schedule.Session" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session">
+<em class="property">class </em><tt class="descclassname">srules.</tt><tt class="descname">Session</tt><big>(</big><em>session_name=''</em>, <em>duration=60</em>, <em>start_hour=0</em>, <em>start_minute=0</em>, <em>session_type='add'</em>, <em>session_description=None</em><big>)</big><a class="headerlink" href="#srules.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>This objects is a representation of a standard &#8216;session&#8217;
 It has a calendar (dateutil) rruleset with one or many rrules inside
-Each Session has a start hour and minute and a &#8216;duration&#8217; in order to 
-calculate periods (called Interval). 
+Each Session has a start hour and minute and a &#8216;duration&#8217; in order to
+calculate periods (called Interval).
 All the Interval in a Session share the same start_hour, minute and duration</p>
 <p>The Recuring occurences are calculed by rules (dateutil rrulesets)
 So you only need to specify one or more rule, and the Session class
@@ -832,11 +846,11 @@ are the only way to define a Session</p>
 <p>Some of this calculation result can not be defined inside a Session anymore
 (because it&#8217;s not anymore only on rrule set and on interval but more than
 one), this calculation results are returned in another object :
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a></p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></p>
 <p>To be able to use session correctly, you have to :</p>
 <ul class="simple">
 <li>first to instanciate a Session object</li>
-<li>Then to add at least one rule using <a class="reference internal" href="#schedule.Session.add_rule" title="schedule.Session.add_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></a></li>
+<li>Then to add at least one rule using <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></li>
 </ul>
 <p>usage example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">shedule</span> <span class="kn">import</span> <span class="n">Session</span>
@@ -881,24 +895,24 @@ sessions</td>
 </dd>
 </dl>
 <dl class="method">
-<dt id="schedule.Session.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>session_name=''</em>, <em>duration=60</em>, <em>start_hour=0</em>, <em>start_minute=0</em>, <em>session_type='add'</em>, <em>session_description=None</em><big>)</big><a class="headerlink" href="#schedule.Session.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>session_name=''</em>, <em>duration=60</em>, <em>start_hour=0</em>, <em>start_minute=0</em>, <em>session_type='add'</em>, <em>session_description=None</em><big>)</big><a class="headerlink" href="#srules.Session.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor for Session object</p>
 <p>At creation the object is set with initial parameters, but no rule, so
 no &#8216;calculated intervals&#8217;
 you&#8217;ll need to call at least one time the
-<a class="reference internal" href="#schedule.Session.add_rule" title="schedule.Session.add_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></a> method to add a rule</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt> method to add a rule</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
-<dd>(see class description: <a class="reference internal" href="#schedule.Session" title="schedule.Session"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session</span></tt></a> )</dd>
+<dd>(see class description: <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session</span></tt> )</dd>
 <dt><em>Returns:</em></dt>
 <dd>&lt;nothing&gt;</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__unicode__">
-<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.__unicode__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__unicode__">
+<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.__unicode__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns unicode string describting the objects and his content</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -909,7 +923,7 @@ you&#8217;ll need to call at least one time the
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">unicode:</th><td class="field-body">unicode string representation
-of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -918,8 +932,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.__repr__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of object</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -929,7 +943,7 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -938,15 +952,15 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__iter__">
-<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.__iter__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>iterable
-(see <a class="reference internal" href="#schedule.Session._forward" title="schedule.Session._forward"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt></a> )</p>
+(see <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt> )</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session._forward">
-<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session._forward" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session._forward">
+<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session._forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>forward generator, used for iteration</p>
 <p>usage example:</p>
 <blockquote>
@@ -958,8 +972,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__len__">
-<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.__len__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate and return len of Session object</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -989,8 +1003,8 @@ not the total duration of all Intervals</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Session.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Session.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;==&#8217; operator</p>
 <p>returns a comparaison between self and anoter object
 can compare two objects of same type and also compare object
@@ -1044,8 +1058,8 @@ unique names for your sessions if you plan to compare equality by names</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__contains__">
-<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.Session.__contains__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.Session.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;in&#8217; operator</p>
 <p>test if an interval or a datetime is contained inside the session</p>
 <p>usage examples:</p>
@@ -1059,7 +1073,7 @@ unique names for your sessions if you plan to compare equality by names</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>see also <a class="reference internal" href="#schedule.Session.in_interval" title="schedule.Session.in_interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></a></p>
+<p>see also <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
 <dd><table class="first last docutils field-list" frame="void" rules="none">
@@ -1100,14 +1114,15 @@ of boolean value.</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.in_interval">
-<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.Session.in_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>public wrapper for <a class="reference internal" href="#schedule.Session.__contains__" title="schedule.Session.__contains__"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt></a>
+<dt id="srules.Session.in_interval">
+<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.Session.in_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>public wrapper for <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt>
 mainly used when needed to set <em>return_interval</em> to True</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result_interval = my_session.in_interval(any_interval, True)
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result_interval</span> <span class="o">=</span> <span class="n">my_session</span><span class="o">.</span><span class="n">in_interval</span><span class="p">(</span><span class="n">any_interval</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -1175,23 +1190,27 @@ tested_interval</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__and__">
-<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Session.__and__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__and__">
+<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Session.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;&amp;&#8217; operator</p>
 <p>Calculate intersection Session and another object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session &amp; other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -1215,30 +1234,34 @@ tested_interval</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__add__">
-<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Session.__add__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__add__">
+<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Session.__add__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;+&#8217; operator</p>
 <p>Calculate addition between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session + other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -1268,30 +1291,34 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__sub__">
-<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Session.__sub__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__sub__">
+<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Session.__sub__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;-&#8216; operator</p>
 <p>Calculate substration between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session - other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -1321,15 +1348,15 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#schedule.Session.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#srules.Session.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>slice operator</p>
 <p>usage examples:</p>
 <blockquote>
@@ -1372,13 +1399,13 @@ of the calculation (if no result, the
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.add_rule">
-<tt class="descname">add_rule</tt><big>(</big><em>label=''</em>, <em>**rrule_params</em><big>)</big><a class="headerlink" href="#schedule.Session.add_rule" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.add_rule">
+<tt class="descname">add_rule</tt><big>(</big><em>label=''</em>, <em>**rrule_params</em><big>)</big><a class="headerlink" href="#srules.Session.add_rule" title="Permalink to this definition">¶</a></dt>
 <dd><p>add a recuring rule for this Session</p>
 <p>It uses the <a class="reference external" href="http://labix.org/python-dateutil">http://labix.org/python-dateutil</a> syntax, so please refer
 to the dateutil documentation for more samples and explanation</p>
 <p>a Session object contains a rruleset object (wich is a set of rrules)</p>
-<p>the <a class="reference internal" href="#schedule.Session.add_rule" title="schedule.Session.add_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></a> method add a rrule to the
+<p>the <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt> method add a rrule to the
 Session rrule set, using the dateutil methods and arguments.</p>
 <p>usage examples:</p>
 <blockquote>
@@ -1399,24 +1426,24 @@ Session rrule set, using the dateutil methods and arguments.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.exclude_rule">
-<tt class="descname">exclude_rule</tt><big>(</big><em>label=''</em>, <em>**rrule_params</em><big>)</big><a class="headerlink" href="#schedule.Session.exclude_rule" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.exclude_rule">
+<tt class="descname">exclude_rule</tt><big>(</big><em>label=''</em>, <em>**rrule_params</em><big>)</big><a class="headerlink" href="#srules.Session.exclude_rule" title="Permalink to this definition">¶</a></dt>
 <dd><p>exclude a recuring rrule to this Session</p>
-<p>see <a class="reference internal" href="#schedule.Session.add_rule" title="schedule.Session.add_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></a> for more explanation</p>
+<p>see <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt> for more explanation</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session._recalculate_occurences">
-<tt class="descname">_recalculate_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session._recalculate_occurences" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session._recalculate_occurences">
+<tt class="descname">_recalculate_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session._recalculate_occurences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recalculate all the occurences (static list) in the object</p>
-<p>This method is used by <a class="reference internal" href="#schedule.Session.add_rule" title="schedule.Session.add_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt></a> and
-<a class="reference internal" href="#schedule.Session.exclude_rule" title="schedule.Session.exclude_rule"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.exclude_rule()</span></tt></a> in order to maintain
+<p>This method is used by <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.add_rule()</span></tt> and
+<tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session.exclude_rule()</span></tt> in order to maintain
 a static list of Intervals based on the rrule given in input.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.get_rules">
-<tt class="descname">get_rules</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.get_rules" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.get_rules">
+<tt class="descname">get_rules</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.get_rules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of rrules</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -1435,8 +1462,8 @@ a static list of Intervals based on the rrule given in input.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.get_occurences">
-<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Session.get_occurences" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.get_occurences">
+<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Session.get_occurences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of all the interval
 calculated based on the input rrules</p>
 <dl class="docutils">
@@ -1456,8 +1483,8 @@ calculated based on the input rrules</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.between">
-<tt class="descname">between</tt><big>(</big><em>start</em>, <em>end</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#schedule.Session.between" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.between">
+<tt class="descname">between</tt><big>(</big><em>start</em>, <em>end</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#srules.Session.between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all occurences between two dates</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -1484,7 +1511,7 @@ False is like ]start-end[</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">CalculatedSession:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> containing
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> containing
 all the Interval within start and end</td>
 </tr>
 </tbody>
@@ -1494,8 +1521,8 @@ all the Interval within start and end</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.next_interval">
-<tt class="descname">next_interval</tt><big>(</big><em>the_date=None</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#schedule.Session.next_interval" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.next_interval">
+<tt class="descname">next_interval</tt><big>(</big><em>the_date=None</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#srules.Session.next_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the next interval (Interval) for a given date.
 If the date is inside a period and inclusive is set to True, returns
 the &#8216;current&#8217; period. Otherwise, returns the next period</p>
@@ -1527,8 +1554,8 @@ the &#8216;current&#8217; period. Otherwise, returns the next period</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Session.prev_interval">
-<tt class="descname">prev_interval</tt><big>(</big><em>the_date=None</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#schedule.Session.prev_interval" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Session.prev_interval">
+<tt class="descname">prev_interval</tt><big>(</big><em>the_date=None</em>, <em>inclusive=True</em><big>)</big><a class="headerlink" href="#srules.Session.prev_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the previous interval (Interval) for a given date.
 If the date is inside a period and inclusive is set to True, returns
 the &#8216;current&#8217; period. Otherwise, returns the previous period</p>
@@ -1565,8 +1592,8 @@ the &#8216;current&#8217; period. Otherwise, returns the previous period</p>
 <div class="section" id="calculatedsession">
 <h2>CalculatedSession<a class="headerlink" href="#calculatedsession" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="schedule.CalculatedSession">
-<em class="property">class </em><tt class="descclassname">schedule.</tt><tt class="descname">CalculatedSession</tt><big>(</big><em>const_list=None</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession">
+<em class="property">class </em><tt class="descclassname">srules.</tt><tt class="descname">CalculatedSession</tt><big>(</big><em>const_list=None</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession" title="Permalink to this definition">¶</a></dt>
 <dd><p>a CalculatedSession is the result of manipulation of one or more sessions
 and when a Session can not be defined by rules anymore</p>
 <p>usage examples:</p>
@@ -1591,7 +1618,7 @@ method and functionnality <strong>except 3:</strong></p>
 which is static by construction : a CalculatedSession is not defined
 by rrules anymore, because they are the
 result of some merging / extraction of differents Session, Intervals or dates</p>
-<p>Plase see <a class="reference internal" href="#schedule.Session" title="schedule.Session"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session</span></tt></a> for all other object and
+<p>Plase see <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session</span></tt> for all other object and
 method documentations.</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -1617,23 +1644,27 @@ method documentations.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="schedule.CalculatedSession.__add__">
-<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__add__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__add__">
+<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__add__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;+&#8217; operator</p>
 <p>Calculate addition between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session + other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session + datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -1663,30 +1694,34 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__and__">
-<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__and__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__and__">
+<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;&amp;&#8217; operator</p>
 <p>Calculate intersection Session and another object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session &amp; other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session &amp; datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">&amp;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -1710,15 +1745,15 @@ of the calculation (if no result, the
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__contains__">
-<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__contains__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;in&#8217; operator</p>
 <p>test if an interval or a datetime is contained inside the session</p>
 <p>usage examples:</p>
@@ -1732,7 +1767,7 @@ of the calculation (if no result, the
 </pre></div>
 </div>
 </div></blockquote>
-<p>see also <a class="reference internal" href="#schedule.Session.in_interval" title="schedule.Session.in_interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></a></p>
+<p>see also <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.in_interval</span></tt></p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
 <dd><table class="first last docutils field-list" frame="void" rules="none">
@@ -1773,8 +1808,8 @@ of boolean value.</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;==&#8217; operator</p>
 <p>returns a comparaison between self and anoter object
 can compare two objects of same type and also compare object
@@ -1828,8 +1863,8 @@ unique names for your sessions if you plan to compare equality by names</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>_slice</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>slice operator</p>
 <p>usage examples:</p>
 <blockquote>
@@ -1872,15 +1907,15 @@ unique names for your sessions if you plan to compare equality by names</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__iter__">
-<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__iter__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>iterable
-(see <a class="reference internal" href="#schedule.Session._forward" title="schedule.Session._forward"><tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt></a> )</p>
+(see <tt class="xref py py-meth docutils literal"><span class="pre">schedule.Session._forward()</span></tt> )</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__len__">
-<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__len__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate and return len of Session object</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -1910,8 +1945,8 @@ not the total duration of all Intervals</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__repr__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of object</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -1921,7 +1956,7 @@ not the total duration of all Intervals</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -1930,23 +1965,27 @@ not the total duration of all Intervals</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__sub__">
-<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__sub__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__sub__">
+<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__sub__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;-&#8216; operator</p>
 <p>Calculate substration between Session and other object</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result = my_session - other_session
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_calculated_session
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_calculated_session</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - other_interval
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">other_interval</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
-<div class="highlight-python"><pre>result = my_session - datetime.datetime.now()
-  ...</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">my_session</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -1976,15 +2015,15 @@ start = end = the_given_datetime</p>
 </dd>
 </dl>
 <p><em>Returns:</em>
-a <a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> object with the result
+a <tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> object with the result
 of the calculation (if no result, the
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> is empty, but it&#8217;s still a
-<a class="reference internal" href="#schedule.CalculatedSession" title="schedule.CalculatedSession"><tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt></a> Object)</p>
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> is empty, but it&#8217;s still a
+<tt class="xref py py-class docutils literal"><span class="pre">schedule.CalculatedSession</span></tt> Object)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.__unicode__">
-<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.__unicode__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.__unicode__">
+<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession.__unicode__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns unicode string describting the objects and his content</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -1995,7 +2034,7 @@ of the calculation (if no result, the
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">unicode:</th><td class="field-body">unicode string representation
-of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -2004,8 +2043,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession._forward">
-<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession._forward" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession._forward">
+<tt class="descname">_forward</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession._forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>forward generator, used for iteration</p>
 <p>usage example:</p>
 <blockquote>
@@ -2017,8 +2056,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.get_occurences">
-<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.get_occurences" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.CalculatedSession.get_occurences">
+<tt class="descname">get_occurences</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.CalculatedSession.get_occurences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of all the interval
 calculated based on the input rrules</p>
 <dl class="docutils">
@@ -2038,14 +2077,15 @@ calculated based on the input rrules</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.CalculatedSession.in_interval">
-<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#schedule.CalculatedSession.in_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>public wrapper for <a class="reference internal" href="#schedule.Session.__contains__" title="schedule.Session.__contains__"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt></a>
+<dt id="srules.CalculatedSession.in_interval">
+<tt class="descname">in_interval</tt><big>(</big><em>other</em>, <em>return_interval=False</em><big>)</big><a class="headerlink" href="#srules.CalculatedSession.in_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>public wrapper for <tt class="xref py py-class docutils literal"><span class="pre">schedule.Session.__contains__</span></tt>
 mainly used when needed to set <em>return_interval</em> to True</p>
 <p>usage examples:</p>
 <blockquote>
-<div><div class="highlight-python"><pre>result_interval = my_session.in_interval(any_interval, True)
-  ...</pre>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="n">result_interval</span> <span class="o">=</span> <span class="n">my_session</span><span class="o">.</span><span class="n">in_interval</span><span class="p">(</span><span class="n">any_interval</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+  <span class="o">...</span>
+</pre></div>
 </div>
 </div></blockquote>
 <dl class="docutils">
@@ -2118,8 +2158,8 @@ tested_interval</p>
 <div class="section" id="interval">
 <h2>Interval<a class="headerlink" href="#interval" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="schedule.Interval">
-<em class="property">class </em><tt class="descclassname">schedule.</tt><tt class="descname">Interval</tt><big>(</big><em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#schedule.Interval" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval">
+<em class="property">class </em><tt class="descclassname">srules.</tt><tt class="descname">Interval</tt><big>(</big><em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#srules.Interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent an interval (especialy date interval)</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -2136,20 +2176,20 @@ tested_interval</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="schedule.Interval.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#schedule.Interval.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#srules.Interval.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interval Constructor</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
-<dd>(see Class Description : <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a> )</dd>
+<dd>(see Class Description : <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt> )</dd>
 <dt><em>Returns:</em></dt>
 <dd><em>Nothing</em></dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__unicode__">
-<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Interval.__unicode__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__unicode__">
+<tt class="descname">__unicode__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Interval.__unicode__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns unicode string describting the objects and his content</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -2160,7 +2200,7 @@ tested_interval</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">unicode:</th><td class="field-body">unicode string representation
-of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -2169,8 +2209,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Interval.__repr__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Interval.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of object</p>
 <dl class="docutils">
 <dt><em>Args:</em></dt>
@@ -2180,7 +2220,7 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <a class="reference internal" href="#schedule.Interval" title="schedule.Interval"><tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">string:</th><td class="field-body">string representation of an <tt class="xref py py-class docutils literal"><span class="pre">schedule.Interval</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -2189,8 +2229,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;==&#8217; operator</p>
 <p><em>Usage example:</em></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">Interval1</span> <span class="o">==</span> <span class="n">Interval2</span><span class="p">:</span>
@@ -2212,8 +2252,8 @@ of an <a class="reference internal" href="#schedule.Interval" title="schedule.In
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__cmp__">
-<tt class="descname">__cmp__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__cmp__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__cmp__">
+<tt class="descname">__cmp__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__cmp__" title="Permalink to this definition">¶</a></dt>
 <dd><p>comparaison operator</p>
 <p><em>Usage example:</em></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">Interval1</span> <span class="o">&gt;</span> <span class="n">Interval2</span><span class="p">:</span>
@@ -2233,8 +2273,8 @@ comparaisons</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__contains__">
-<tt class="descname">__contains__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__contains__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;in&#8217; operator</p>
 <p>Test if and interval is contained inside the other</p>
 <p><em>Usage example:</em></p>
@@ -2257,8 +2297,8 @@ comparaisons</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__and__">
-<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__and__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__and__">
+<tt class="descname">__and__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;&amp;&#8217; operator</p>
 <p>returns the interval in intersection between the two input intervals
 or None if there is no intersection</p>
@@ -2281,8 +2321,8 @@ or None if there is no intersection</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__add__">
-<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__add__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__add__">
+<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__add__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;+&#8217; operator</p>
 <p>Add two Intervals</p>
 <p><em>Usage example:</em></p>
@@ -2300,8 +2340,8 @@ or None if there is no intersection</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__sub__">
-<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#schedule.Interval.__sub__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__sub__">
+<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#srules.Interval.__sub__" title="Permalink to this definition">¶</a></dt>
 <dd><p>&#8216;-&#8216; operator</p>
 <p>Substract two Intervals</p>
 <p><em>Usage example:</em></p>
@@ -2320,8 +2360,8 @@ or None if there is no intersection</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="schedule.Interval.__hash__">
-<tt class="descname">__hash__</tt><big>(</big><big>)</big><a class="headerlink" href="#schedule.Interval.__hash__" title="Permalink to this definition">¶</a></dt>
+<dt id="srules.Interval.__hash__">
+<tt class="descname">__hash__</tt><big>(</big><big>)</big><a class="headerlink" href="#srules.Interval.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a hash of the object which should be unique</p>
 </dd></dl>
 
@@ -2391,8 +2431,8 @@ or None if there is no intersection</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Thomas Chiroux.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2011-2012, Link Care Services.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

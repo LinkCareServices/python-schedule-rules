@@ -45,6 +45,8 @@ __authors__ = [
   'Thomas Chiroux',
 ]
 
+from session import CalculatedSession
+
 def find(_list, _search):
   """find item in a list an returns the item position and the position itsef
   """

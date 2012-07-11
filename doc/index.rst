@@ -11,12 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 20
 
-.. automodule:: schedule
+.. automodule:: srules
 
 Srules
 ------
 
-.. autoclass:: schedule.SRules
+.. autoclass:: srules.SRules
    :members:
    :private-members:
    :special-members:
@@ -27,7 +27,7 @@ Srules
 Session
 -------
 
-.. autoclass:: schedule.Session
+.. autoclass:: srules.Session
    :members:
    :private-members:
    :special-members:
@@ -37,7 +37,7 @@ Session
 CalculatedSession
 -----------------
 
-.. autoclass:: schedule.CalculatedSession
+.. autoclass:: srules.CalculatedSession
    :members:
    :private-members:
    :special-members:
@@ -48,7 +48,7 @@ CalculatedSession
 Interval
 --------
 
-.. autoclass:: schedule.Interval
+.. autoclass:: srules.Interval
    :members:
    :private-members:
    :special-members:
@@ -61,4 +61,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

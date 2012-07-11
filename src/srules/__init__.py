@@ -30,7 +30,7 @@ time intervals).
 Usage of this tool can be limited to define
 and work wich :py:class:`schedule.SRules`
 
-Dependancies:
+Dependencies:
   python-dateutil : http://labix.org/python-dateutil
 
 Useful URL:
