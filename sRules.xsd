@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2012 Link Care Services -->
+<xs:schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:lcs:srules:config:1.0"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        version="1.0">
+    <xs:element name="srules"/>
+    <xs:complexType name="srules">
+        <xs:all>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="autoRefresh" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <restriction base="xs:string">
+                        <enumeration value="True"/>
+                        <enumeration value="False"/>
+                    </restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="session" minOccurs="1" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="session">
+        <xs:all>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="sessionType" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <restriction base="xs:string">
+                        <enumeration value="add"/>
+                        <enumeration value="exclude"/>
+                    </restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="startHour" type="xs:integer" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="0"/>
+                        <xs:maxInclusive value="59"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="startMinute" type="xs:integer" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="0"/>
+                        <xs:maxInclusive value="59"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="duration" type="xs:integer" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="1"/>
+                     </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="rule" minOccurs="1">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="label" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="type" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <restriction base="xs:string">
+                                    <enumeration value="add"/>
+                                    <enumeration value="exclude"/>
+                                </restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="freq" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <restriction base="xs:string">
+                                    <enumeration value="YEARLY"/>
+                                    <enumeration value="MONTHLY"/>
+                                    <enumeration value="WEEKLY"/>
+                                    <enumeration value="DAILY"/>
+                                    <enumeration value="HOURLY"/>
+                                    <enumeration value="MINUTELY"/>
+                                    <enumeration value="SECONDLY"/>
+                                </restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="cache" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <restriction base="xs:string">
+                                    <enumeration value="True"/>
+                                    <enumeration value="False"/>
+                                </restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="dtstart" minOccurs="0" maxOccurs="1">
+                            <simpleType>
+                                <restriction base="xs:dateTime">
+                                    <pattern value="\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d[-,+]\d\d:\d\d"/>
+                                </restriction>
+                            </simpleType>
+                        </xs:element>
+                        <xs:element name="interval" type="xs:integer" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:integer">
+                                    <xs:minInclusive value="1"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="wkst" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <restriction base="xs:string">
+                                    <enumeration value="MO"/>
+                                    <enumeration value="TU"/>
+                                    <enumeration value="WE"/>
+                                    <enumeration value="TH"/>
+                                    <enumeration value="FR"/>
+                                    <enumeration value="SA"/>
+                                    <enumeration value="SU"/>
+                                    <enumeration value="1"/>
+                                    <enumeration value="2"/>
+                                    <enumeration value="3"/>
+                                    <enumeration value="4"/>
+                                    <enumeration value="5"/>
+                                    <enumeration value="6"/>
+                                    <enumeration value="7"/>
+                                </restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="count" type="xs:integer" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:integer">
+                                    <xs:minInclusive value="1"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="until" minOccurs="0" maxOccurs="1">
+                            <simpleType>
+                                <restriction base="xs:dateTime">
+                                    <pattern value="\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d[-,+]\d\d:\d\d"/>
+                                </restriction>
+                            </simpleType>
+                        </xs:element>
+
+                        <xs:element name="bysetpos" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="bymonth" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="bymonthday" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byyearday" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byweekno" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byweekday" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byhour" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byminute" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="bysecond" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="byeaster" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="position" type="xs:integer"/>
+    </xs:complexType>
+</xs:schema>
