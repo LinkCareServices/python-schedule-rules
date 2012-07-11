@@ -38,8 +38,8 @@ Useful URL:
 
 """
 
-from interval import Interval
-from session import Session, CalculatedSession
-from schedule import SRules
+from srules.interval import Interval
+from srules.session import Session, CalculatedSession
+from srules.schedule import SRules
 
 __all__ = 'Inteval Session CalculatedSession SRUles'.split()

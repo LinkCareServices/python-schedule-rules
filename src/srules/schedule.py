@@ -45,10 +45,6 @@ __authors__ = [
   'Thomas Chiroux',
 ]
 
-from dateutil.relativedelta import relativedelta
-from dateutil import rrule
-import datetime
-
 def find(_list, _search):
   """find item in a list an returns the item position and the position itsef
   """

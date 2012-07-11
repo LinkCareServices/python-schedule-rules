@@ -28,8 +28,6 @@ __authors__ = [
   'Thomas Chiroux',
   ]
 
-from dateutil.relativedelta import relativedelta
-from dateutil import rrule
 import datetime
 
 class Interval(object):

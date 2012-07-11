@@ -30,8 +30,7 @@ __authors__ = [
 import unittest
 import datetime
 
-# dependancies imports
-from dateutil.relativedelta import relativedelta
+# dependencies imports
 from dateutil import rrule
 
 # import here the module / classes to be tested
