@@ -240,3 +240,8 @@ class Interval(object):
     """
     return hash((self.start, self.end))
 
+
+  def duration(self):
+    """return the duration of the interval in seconds
+    """
+    return int((self.end - self.start).total_seconds())

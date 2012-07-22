@@ -31,7 +31,7 @@ Sample
       ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,25), interval = 7)
       ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,26), interval = 7)
 
-      ses2 = Session("Hollidays",
+      ses2 = Session("Holidays",
                      session_type='exclude',
                      duration=60*24,
                      start_hour=00,

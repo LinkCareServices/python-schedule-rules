@@ -42,4 +42,4 @@ from srules.interval import Interval
 from srules.session import Session, CalculatedSession
 from srules.schedule import SRules
 
-__all__ = 'Inteval Session CalculatedSession SRUles'.split()
+__all__ = 'Interval Session CalculatedSession SRules'.split()

@@ -142,17 +142,14 @@ class SRules(CalculatedSession):
         save some CPU when creating complex or big SRules.
 
   """
-  name = ""
-  sessions = []
-  occurences = []
-  auto_refresh = True
-  total_duration = 0
-
   def __init__(self, name, auto_refresh=True):
     CalculatedSession.__init__(self)
     
     self.name = name
     self.auto_refresh = auto_refresh
+    self.sessions = []
+    self.occurences = []
+    self.total_duration = 0
 
   def add_session(self, session):
     """add new session to SRules object
@@ -235,6 +232,27 @@ class SRules(CalculatedSession):
 
     if self.auto_refresh:
       self._recalculate_occurences()
+
+  def _calc_total_duration(self):
+    """returns the total duration of the complete Srule
+
+    usage example:
+
+      .. code-block:: python
+
+        print my_srules.total_duration()
+
+    *Args:*
+      <none>
+
+    *Returns*
+      :int: total duration of the sRules in seconds
+    """
+    total = 0
+    for occ in self.occurences:
+      total += occ.duration()
+    self.total_duration = total
+    return total
 
   def _recalculate_occurences(self):
     """Recalculate all the occurences (static list) in the object
