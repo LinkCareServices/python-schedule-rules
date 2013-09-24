@@ -30,58 +30,60 @@ time intervals).
 Usage of this tool can be limited to define
 and work wich :py:class:`schedule.SRules`
 
-Dependancies:
-  python-dateutil : http://labix.org/python-dateutil
+Dependencies:
+    python-dateutil : http://labix.org/python-dateutil
 
 Useful URL:
-  python operators : http://docs.python.org/library/operator.html
+    python operators : http://docs.python.org/library/operator.html
 
 Contains:
 * Srules
 """
 
 __authors__ = [
-  # alphabetical order by last name
-  'Thomas Chiroux',
-]
+    # alphabetical order by last name
+    'Thomas Chiroux', ]
 
 from session import CalculatedSession
 
+
 def find(_list, _search):
-  """find item in a list an returns the item position and the position itsef
-  """
-  return next(((i, x) for i, x in enumerate(_list) if x == _search),
-              (None, None))
+    """find item in a list an returns the item position and the position itsef
+    """
+    return next(((i, x) for i, x in enumerate(_list) if x == _search),
+                (None, None))
+
 
 class SRules(CalculatedSession):
-  """SRules : Schedule Rules Class
+    """SRules : Schedule Rules Class
 
-  SRules stores an ordered list of sessions which will be processed
-  in that order to generate an occurence list.
-  It can handle 'add' and 'exclude' sessions.
+    SRules stores an ordered list of sessions which will be processed
+    in that order to generate an occurence list.
+    It can handle 'add' and 'exclude' sessions.
 
-  Each session is a set of rules ('normal rules') which indicates periods of
-  time. This rules can include 'exclude' rules (in rrule terms)
-  if they are indended to decribe the 'normal' session.
+    Each session is a set of rules ('normal rules') which indicates periods of
+    time. This rules can include 'exclude' rules (in rrule terms)
+    if they are indended to decribe the 'normal' session.
 
-  SRules inherit all methods from CalculatedSession, so they share all
-  method and functionnality with **one difference** :
+    SRules inherit all methods from CalculatedSession, so they share all
+    method and functionnality with **one difference** :
 
     * *_recalculate_occurences* is again defined.
 
-  SRules has also 3 new methods :
+    SRules has also 3 new methods :
 
     * :py:class:`schedule.SRules.add_session`
     * :py:class:`schedule.SRules.remove_session`
     * :py:class:`schedule.SRules.move_session`
 
 
-  .. note:: Ex. (person at work)
+    .. note:: Ex. (person at work)
 
     * session1 (add) = all the week days from 08:00 to 18:00 :
       aka all the normal working days
 
-    * session2 (exclude) = All the days between 1st April and 13th April : holidays
+    * session2 (exclude) = All the days between 1st April and 13th April
+                           :holidays
 
     * session3 (add) = sunday 10/07/2011 from 14:00 to 17:00 : an extra day
 
@@ -96,11 +98,16 @@ class SRules(CalculatedSession):
       from dateutil import rrule
 
       ses1 = Session("Work", duration=60*10,start_hour=8, start_minute=00)
-      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,22), interval = 7)
-      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,23), interval = 7)
-      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,24), interval = 7)
-      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,25), interval = 7)
-      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,26), interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,22),
+                    interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,23),
+                    interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,24),
+                    interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,25),
+                    interval = 7)
+      ses1.add_rule("", freq=rrule.DAILY, dtstart=datetime.date(2011,8,26),
+                    interval = 7)
 
       ses2 = Session("Hollidays",
                      session_type='exclude',
@@ -113,7 +120,8 @@ class SRules(CalculatedSession):
                     until = datetime.date(2012,4, 13),
                     interval = 1)
 
-      ses3 = Session("ExtraWorkDay", duration=60*3, start_hour=14, start_minute=00)
+      ses3 = Session("ExtraWorkDay", duration=60*3, start_hour=14,
+                     start_minute=00)
       ses3.add_rule("",
                     freq=rrule.DAILY,
                     count = 1,
@@ -131,7 +139,7 @@ class SRules(CalculatedSession):
       datetime.datetime(2012, 4,2,15,30) in my_srule
       Out[29]: True
 
-  *Args:*
+    *Args:*
     :name:  (string) : a name you choose for this SRules object
     :auto_refresh: (boolean) :
 
@@ -141,143 +149,143 @@ class SRules(CalculatedSession):
       * if False, you'll have to call _recalculate_occurences manually. It can
         save some CPU when creating complex or big SRules.
 
-  """
-  def __init__(self, name, auto_refresh=True):
-    CalculatedSession.__init__(self)
-    
-    self.name = name
-    self.auto_refresh = auto_refresh
-    self.sessions = []
-    self.occurences = []
-    self.total_duration = 0
-
-  def add_session(self, session):
-    """add new session to SRules object
-
-    usage examples:
-
-    .. code-block:: python
-
-      my_srules.add_session(my_new_session)
-
-    *Args:*
-      :session: (Session) the session object you want to add.
-        the object needs to be instanciated before adding it to the SRules
-
-    *Returns:*
-      <nothing>
-
     """
-    self.sessions.append(session)
+    def __init__(self, name, auto_refresh=True):
+        CalculatedSession.__init__(self)
 
-    if self.auto_refresh:
-      self._recalculate_occurences()
+        self.name = name
+        self.auto_refresh = auto_refresh
+        self.sessions = []
+        self.occurences = []
+        self.total_duration = 0
 
-  def remove_session(self, name_or_pos):
-    """Remove a (previously added) session of the objects.
+    def add_session(self, session):
+        """add new session to SRules object
 
-    usage examples:
+        usage examples:
 
-    .. code-block:: python
+        .. code-block:: python
 
-      my_srules.remove_session("Session Test")
+          my_srules.add_session(my_new_session)
 
-    .. code-block:: python
+        *Args:*
+          :session: (Session) the session object you want to add.
+            the object needs to be instanciated before adding it to the SRules
 
-      my_srules.remove_session(3)
+        *Returns:*
+          <nothing>
+
+        """
+        self.sessions.append(session)
+
+        if self.auto_refresh:
+            self._recalculate_occurences()
+
+    def remove_session(self, name_or_pos):
+        """Remove a (previously added) session of the objects.
+
+        usage examples:
+
+        .. code-block:: python
+
+          my_srules.remove_session("Session Test")
+
+        .. code-block:: python
+
+          my_srules.remove_session(3)
 
 
-    *Args:*
-      :name_or_pos: can be either:
+        *Args:*
+          :name_or_pos: can be either:
 
-          * *string* : the name of the session you're trying to remove
+              * *string* : the name of the session you're trying to remove
 
-          * *int* : the position (in the session list) of the session you're
-              trying to remove
+              * *int* : the position (in the session list) of the session
+                 you're trying to remove
 
-    *Returns:*
-      <nothing>
+        *Returns:*
+          <nothing>
 
-    """
-    if type(name_or_pos) == int:
-      self.sessions.pop(name_or_pos)
-    elif type(name_or_pos) == str:
-      pos, session = find(self.sessions, name_or_pos)
-      if pos is not None:
-        self.sessions.pop(pos)
-      else:
-        raise KeyError("No Session '%s' found" % name_or_pos)
-    if self.auto_refresh:
-      self._recalculate_occurences()
+        """
+        if type(name_or_pos) == int:
+            self.sessions.pop(name_or_pos)
+        elif type(name_or_pos) == str:
+            pos, session = find(self.sessions, name_or_pos)
+            if pos is not None:
+                self.sessions.pop(pos)
+            else:
+                raise KeyError("No Session '%s' found" % name_or_pos)
+        if self.auto_refresh:
+            self._recalculate_occurences()
 
-  def move_session(self, old_position, new_position):
-    """Move a session in the list
-    Used to change the order, and possibliy the behaviour of the SRules
+    def move_session(self, old_position, new_position):
+        """Move a session in the list
+        Used to change the order, and possibliy the behaviour of the SRules
 
-    usage examples:
+        usage examples:
 
-      .. code-block:: python
+          .. code-block:: python
 
-        my_srules.move_session(1,3)
+            my_srules.move_session(1,3)
 
-    *Args:*
-      :old_position: (int) old position of the session in the list
-      :new_position: (int) new position of the session in the list
+        *Args:*
+          :old_position: (int) old position of the session in the list
+          :new_position: (int) new position of the session in the list
 
-    *Returns:*
-      <nothing>
+        *Returns:*
+          <nothing>
 
-    """
-    self.sessions.insert(new_position, self.sessions.pop(old_position))
+        """
+        self.sessions.insert(new_position, self.sessions.pop(old_position))
 
-    if self.auto_refresh:
-      self._recalculate_occurences()
+        if self.auto_refresh:
+            self._recalculate_occurences()
 
-  def _calc_total_duration(self):
-    """returns the total duration of the complete Srule
+    def _calc_total_duration(self):
+        """returns the total duration of the complete Srule
 
-    usage example:
+        usage example:
 
-      .. code-block:: python
+          .. code-block:: python
 
-        print my_srules.total_duration()
+            print my_srules.total_duration()
 
-    *Args:*
-      <none>
+        *Args:*
+          <none>
 
-    *Returns*
-      :int: total duration of the sRules in seconds
-    """
-    total = 0
-    for occ in self.occurences:
-      total += occ.duration()
-    self.total_duration = total
-    return total
+        *Returns*
+          :int: total duration of the sRules in seconds
+        """
+        total = 0
+        for occ in self.occurences:
+            total += occ.duration()
+        self.total_duration = total
+        return total
 
-  def _recalculate_occurences(self):
-    """Recalculate all the occurences (static list) in the object
+    def _recalculate_occurences(self):
+        """Recalculate all the occurences (static list) in the object
 
-    This method is used by :py:meth:`schedule.SRules.add_session` and
-    :py:meth:`schedule.SRules.remove_session` and
-    :py:meth:`schedule.SRules.move_session` in order to maintain
-    a static list of Intervals based on the sessions (and session order)
-    inside the SRules object.
+        This method is used by :py:meth:`schedule.SRules.add_session` and
+        :py:meth:`schedule.SRules.remove_session` and
+        :py:meth:`schedule.SRules.move_session` in order to maintain
+        a static list of Intervals based on the sessions (and session order)
+        inside the SRules object.
 
-    it can be called manually, especially when the object is created with
-    auto_refresh set to False.
+        it can be called manually, especially when the object is created with
+        auto_refresh set to False.
 
-    """
-    # after adding a rule, we need to recompute the period list
+        """
+        # after adding a rule, we need to recompute the period list
 
-    new_calc_session = CalculatedSession([])
-    new_total_duration = 0
-    for _session in self.sessions:
-      #new_occurences2 = CalculatedSession(new_occurences)
-      if _session.session_type == 'add':
-        new_calc_session = new_calc_session + _session
-      elif _session.session_type == 'exclude':
-        new_calc_session = new_calc_session - _session
-      #new_occurences = list(new_occurences2)
+        new_calc_session = CalculatedSession([])
+        new_total_duration = 0
+        for _session in self.sessions:
+            #new_occurences2 = CalculatedSession(new_occurences)
+            if _session.session_type == 'add':
+                new_calc_session = new_calc_session + _session
+            elif _session.session_type == 'exclude':
+                new_calc_session = new_calc_session - _session
+            #new_occurences = list(new_occurences2)
 
-    self.occurences = list(new_calc_session) #new_occurences
-    self.total_duration = new_total_duration # not used
+        self.occurences = list(new_calc_session)  # new_occurences
+        self.total_duration = new_total_duration  # not used

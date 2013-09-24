@@ -19,7 +19,7 @@ Sample
 .. code-block:: python
 
       import datetime
-      from schedule import Session, SRules, Interval, CalculatedSession
+      from srules import Session, SRules, Interval, CalculatedSession
       from dateutil.relativedelta import relativedelta
 
       from dateutil import rrule
