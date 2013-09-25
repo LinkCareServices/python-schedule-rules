@@ -759,6 +759,7 @@ class Session(object):
         self.rules.append({'type': 'add',
                            'label': label,
                            'rule': rrule_params})
+        return self
 
     def exclude_rule(self, label="", **rrule_params):
         """exclude a recuring rrule to this Session
@@ -790,6 +791,7 @@ class Session(object):
         self.rules.append({'type': 'exclude',
                            'label': label,
                            'rule': rrule_params})
+        return self
 
     def _recalculate_occurences(self):
         """Recalculate all the occurences (static list) in the object
