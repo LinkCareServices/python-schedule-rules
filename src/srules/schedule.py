@@ -39,12 +39,14 @@ Useful URL:
 Contains:
 * Srules
 """
+from __future__ import absolute_import
+from builtins import next
 
 __authors__ = [
     # alphabetical order by last name
     'Thomas Chiroux', ]
 
-from session import CalculatedSession
+from .session import CalculatedSession
 
 
 def find(_list, _search):

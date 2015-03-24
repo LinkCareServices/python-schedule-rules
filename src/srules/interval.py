@@ -22,6 +22,9 @@
 Contains:
 * Interval
 """
+from past.builtins import cmp
+from builtins import str
+from builtins import object
 
 __authors__ = [
     # alphabetical order by last name
@@ -81,7 +84,7 @@ class Interval(object):
           :string: string representation of an :py:class:`schedule.Interval`
 
         """
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __eq__(self, other):
         """'==' operator

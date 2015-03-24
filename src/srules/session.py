@@ -23,6 +23,10 @@ Contains:
 * Session
 * CalculatedSession
 """
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 
 __authors__ = [
     # alphabetical order by last name
@@ -32,7 +36,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 import datetime
 
-from interval import Interval
+from .interval import Interval
 
 
 class Session(object):
@@ -201,7 +205,7 @@ class Session(object):
           :string: string representation of an :py:class:`schedule.Interval`
 
         """
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __iter__(self):
         """iterable
